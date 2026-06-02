@@ -1119,7 +1119,8 @@ export default function App() {
             ))}
           </div>
 
-          <button style={s.btnAmarelo} onClick={sair}>← Sair do painel</button>
+          <button style={s.btnAmarelo} onClick={() => setTela("home")}>🎯 Ir para Treinamento</button>
+          <button style={{ ...s.btnGhost, marginLeft: 10 }} onClick={sair}>← Sair do painel</button>
         </div>
       </div>
     );
