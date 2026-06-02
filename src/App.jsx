@@ -478,7 +478,7 @@ export default function App() {
   const entrar = () => {
     setErroLogin("");
     if (!nomeInput.trim() || !senhaInput.trim()) { setErroLogin("Preencha nome e senha."); return; }
-    const usuario = autenticarVendedor(nomeInput.trim(), senhaInput);
+    const usuario = autenticarVendedor(nomeInput.trim(), senhaInput) || autenticarAdmin(nomeInput.trim(), senhaInput);
     if (usuario) { setVendedor(usuario.nome); setTela("home"); }
     else { setErroLogin("Nome ou senha incorretos."); }
   };
