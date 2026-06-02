@@ -15,7 +15,26 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const OPENAI_KEY = "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";
-const SENHA_GESTOR = "vb2026";
+
+// ─── USUÁRIOS ─────────────────────────────────────────────────────
+const USUARIOS_INICIAIS = [
+  { nome: "John",    senha: "VB2026#@",   role: "admin" },
+  { nome: "David",   senha: "VB2026#@",   role: "admin" },
+  { nome: "Patrick", senha: "VB2026#@",   role: "admin" },
+  { nome: "Analu",   senha: "VB2026#@!%", role: "vendedor" },
+  { nome: "Thais",   senha: "VB2026#@$&", role: "vendedor" },
+  { nome: "Tamires", senha: "VB2026#@*^", role: "vendedor" },
+  { nome: "Carlos",  senha: "VB2026#@=+", role: "vendedor" },
+  { nome: "Edson",   senha: "VB2026#@?>", role: "vendedor" },
+  { nome: "Izabel",  senha: "VB2026#@~<", role: "vendedor" },
+];
+
+const getUsuarios = () => {
+  try { return JSON.parse(localStorage.getItem("vb_usuarios") || "null") || USUARIOS_INICIAIS; }
+  catch { return USUARIOS_INICIAIS; }
+};
+const saveUsuarios = (lista) => localStorage.setItem("vb_usuarios", JSON.stringify(lista));
+const autenticar = (nome, senha) => getUsuarios().find(u => u.nome.toLowerCase() === nome.trim().toLowerCase() && u.senha === senha) || null;
 const LOGO_URL = "https://voipdobrasil.com.br/wp-content/uploads/2024/05/act_Voip_Logo_Vertical_Amarelo_RGB1.png";
 const FONTS = "@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&display=swap');";
 const MONT = "'Montserrat', sans-serif";
@@ -317,13 +336,15 @@ const Logo = () => (
   </div>
 );
 
-const Topbar = ({ vendedor, onHome, onHistorico, onGestor }) => (
+const Topbar = ({ usuario, onHome, onHistorico, onGestor, onTrocarSenha, onSair }) => (
   <div style={s.topbar}>
     <div style={{ cursor: "pointer" }} onClick={onHome}><Logo /></div>
     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-      {vendedor && <span style={{ fontSize: 12, color: C.claro }}>Olá, <span style={{ color: C.amareloEscuro, fontWeight: 700 }}>{vendedor}</span></span>}
-      {vendedor && <button style={s.btnGhost} onClick={onHistorico}>Meus resultados</button>}
-      <button style={s.btnGestor} onClick={onGestor}>Painel Gestor</button>
+      {usuario && <span style={{ fontSize: 12, color: C.claro }}>Olá, <span style={{ color: C.amareloEscuro, fontWeight: 700 }}>{usuario.nome}</span></span>}
+      {usuario?.role === "vendedor" && <button style={s.btnGhost} onClick={onHistorico}>Meus resultados</button>}
+      {usuario?.role === "vendedor" && <button style={s.btnGhost} onClick={onTrocarSenha}>🔑 Senha</button>}
+      {usuario?.role === "admin" && <button style={s.btnGestor} onClick={onGestor}>Painel Gestor</button>}
+      {usuario && <button style={{ ...s.btnGhost, color: C.vermelho, borderColor: C.vermelho + "44" }} onClick={onSair}>Sair</button>}
     </div>
   </div>
 );
@@ -772,42 +793,103 @@ REGRAS ABSOLUTAS:
 // ─── APP PRINCIPAL ────────────────────────────────────────────────
 export default function App() {
   const [tela, setTela] = useState("login");
-  const [vendedor, setVendedor] = useState("");
+  const [usuario, setUsuario] = useState(null); // { nome, senha, role }
   const [nomeInput, setNomeInput] = useState("");
   const [senhaInput, setSenhaInput] = useState("");
+  const [erroLogin, setErroLogin] = useState("");
   const [historico, setHistorico] = useState([]);
   const [loading, setLoading] = useState(false);
+  // troca de senha
+  const [modalSenha, setModalSenha] = useState(false);
+  const [senhaAtual, setSenhaAtual] = useState("");
+  const [senhaNova, setSenhaNova] = useState("");
+  const [senhaConfirm, setSenhaConfirm] = useState("");
+  const [erroSenha, setErroSenha] = useState("");
+  const [okSenha, setOkSenha] = useState("");
 
-  const entrar = () => { if (nomeInput.trim()) { setVendedor(nomeInput.trim()); setTela("home"); } };
+  const entrar = () => {
+    setErroLogin("");
+    const u = autenticar(nomeInput, senhaInput);
+    if (!u) { setErroLogin("Nome ou senha incorretos."); return; }
+    setUsuario(u);
+    if (u.role === "admin") { carregarTodos(); setTela("gestor"); }
+    else setTela("home");
+  };
 
-  const entrarGestor = () => {
-    if (senhaInput === SENHA_GESTOR) { carregarTodos(); setTela("gestor"); }
-    else alert("Senha incorreta");
+  const sair = () => { setUsuario(null); setNomeInput(""); setSenhaInput(""); setTela("login"); };
+
+  const trocarSenha = () => {
+    setErroSenha(""); setOkSenha("");
+    if (senhaAtual !== usuario.senha) { setErroSenha("Senha atual incorreta."); return; }
+    if (senhaNova.length < 6) { setErroSenha("Nova senha deve ter ao menos 6 caracteres."); return; }
+    if (senhaNova !== senhaConfirm) { setErroSenha("As senhas não coincidem."); return; }
+    const lista = getUsuarios().map(u => u.nome === usuario.nome ? { ...u, senha: senhaNova } : u);
+    saveUsuarios(lista);
+    const atualizado = { ...usuario, senha: senhaNova };
+    setUsuario(atualizado);
+    setOkSenha("Senha alterada com sucesso!");
+    setSenhaAtual(""); setSenhaNova(""); setSenhaConfirm("");
   };
 
   const carregarTodos = async () => { setLoading(true); setHistorico(await buscarSimulacoes(null)); setLoading(false); };
-  const verMeus = async () => { setLoading(true); setHistorico(await buscarSimulacoes(vendedor)); setLoading(false); setTela("historico"); };
+  const verMeus = async () => { setLoading(true); setHistorico(await buscarSimulacoes(usuario.nome)); setLoading(false); setTela("historico"); };
 
   const Nav = () => (
-    <Topbar vendedor={vendedor} onHome={() => setTela(vendedor ? "home" : "login")} onHistorico={verMeus} onGestor={() => setTela("loginGestor")} />
+    <Topbar
+      usuario={usuario}
+      onHome={() => setTela(usuario ? "home" : "login")}
+      onHistorico={verMeus}
+      onGestor={() => { carregarTodos(); setTela("gestor"); }}
+      onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }}
+      onSair={sair}
+    />
+  );
+
+  // ── MODAL TROCA DE SENHA ──
+  const ModalSenha = () => !modalSenha ? null : (
+    <div style={{ position: "fixed", inset: 0, background: "#0008", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ background: C.branco, borderRadius: 16, padding: "32px 28px", width: "100%", maxWidth: 380, boxShadow: "0 20px 60px #0003" }}>
+        <div style={{ fontSize: 16, fontWeight: 800, color: C.texto, fontFamily: MONT, marginBottom: 6 }}>Alterar senha</div>
+        <div style={{ fontSize: 12, color: C.suave, marginBottom: 24 }}>Usuário: <strong>{usuario?.nome}</strong></div>
+        {["senhaAtual", "senhaNova", "senhaConfirm"].map((campo, i) => (
+          <div key={campo} style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 11, color: C.claro, letterSpacing: 1, fontFamily: MONT, fontWeight: 700, marginBottom: 6 }}>
+              {["SENHA ATUAL", "NOVA SENHA", "CONFIRMAR NOVA SENHA"][i]}
+            </div>
+            <input
+              style={s.input} type="password"
+              placeholder={["Digite sua senha atual", "Mínimo 6 caracteres", "Repita a nova senha"][i]}
+              value={[senhaAtual, senhaNova, senhaConfirm][i]}
+              onChange={e => [setSenhaAtual, setSenhaNova, setSenhaConfirm][i](e.target.value)}
+            />
+          </div>
+        ))}
+        {erroSenha && <div style={{ fontSize: 12, color: C.vermelho, marginBottom: 10, padding: "8px 12px", background: "#FEECEC", borderRadius: 8 }}>{erroSenha}</div>}
+        {okSenha && <div style={{ fontSize: 12, color: C.verde, marginBottom: 10, padding: "8px 12px", background: "#EAFAF1", borderRadius: 8 }}>{okSenha}</div>}
+        <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+          <button style={s.btnAmarelo} onClick={trocarSenha}>Salvar senha</button>
+          <button style={s.btnGhost} onClick={() => setModalSenha(false)}>Cancelar</button>
+        </div>
+      </div>
+    </div>
   );
 
   // ── LOGIN ──
   if (tela === "login") return (
     <div style={{ ...s.page, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20, minHeight: "100vh" }}>
       <style>{FONTS}</style>
-      <div style={{ width: "100%", maxWidth: 420 }}>
+      <ModalSenha />
+      <div style={{ width: "100%", maxWidth: 400 }}>
         <div style={{ marginBottom: 32 }}><Logo /></div>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: C.texto, margin: "0 0 6px", fontFamily: MONT }}>Boas-vindas!</h2>
         <p style={{ fontSize: 13, color: C.suave, margin: "0 0 28px" }}>Plataforma de treinamento comercial · VoIP do Brasil</p>
         <div style={{ height: 1, background: C.borda, marginBottom: 24 }} />
-        <div style={{ fontSize: 11, color: C.claro, marginBottom: 8, letterSpacing: 1, fontFamily: MONT, fontWeight: 700 }}>SEU NOME</div>
-        <input style={{ ...s.input, marginBottom: 12 }} placeholder="Como você se chama?" value={nomeInput} onChange={e => setNomeInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrar()} autoFocus />
-        <button style={s.btnAmareloFull} onClick={entrar}>Entrar no treinamento →</button>
-        <div style={{ height: 1, background: C.borda, margin: "24px 0" }} />
-        <div style={{ fontSize: 11, color: C.claro, marginBottom: 8, letterSpacing: 1, fontFamily: MONT, fontWeight: 700 }}>ACESSO GESTOR</div>
-        <input style={{ ...s.input, marginBottom: 10 }} placeholder="Senha do gestor" type="password" value={senhaInput} onChange={e => setSenhaInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrarGestor()} />
-        <button style={{ ...s.btnAmareloFull, background: C.fundo, color: C.amareloEscuro, border: `1.5px solid ${C.amarelo}66` }} onClick={entrarGestor}>Acessar painel gestor</button>
+        <div style={{ fontSize: 11, color: C.claro, marginBottom: 8, letterSpacing: 1, fontFamily: MONT, fontWeight: 700 }}>NOME</div>
+        <input style={{ ...s.input, marginBottom: 12 }} placeholder="Seu nome" value={nomeInput} onChange={e => setNomeInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrar()} autoFocus />
+        <div style={{ fontSize: 11, color: C.claro, marginBottom: 8, letterSpacing: 1, fontFamily: MONT, fontWeight: 700 }}>SENHA</div>
+        <input style={{ ...s.input, marginBottom: 6 }} placeholder="Sua senha" type="password" value={senhaInput} onChange={e => setSenhaInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrar()} />
+        {erroLogin && <div style={{ fontSize: 12, color: C.vermelho, marginBottom: 10, padding: "8px 12px", background: "#FEECEC", borderRadius: 8 }}>{erroLogin}</div>}
+        <button style={{ ...s.btnAmareloFull, marginTop: 12 }} onClick={entrar}>Entrar →</button>
       </div>
     </div>
   );
@@ -816,6 +898,7 @@ export default function App() {
   if (tela === "home") return (
     <div style={s.page}>
       <style>{FONTS}</style>
+      <ModalSenha />
       <Nav />
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "52px 24px" }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
@@ -869,8 +952,9 @@ export default function App() {
   if (tela === "quiz") return (
     <div style={{ ...s.page, background: C.fundo }}>
       <style>{FONTS}</style>
+      <ModalSenha />
       <Nav />
-      <Quiz vendedor={vendedor} onVoltar={() => setTela("home")} />
+      <Quiz vendedor={usuario?.nome} onVoltar={() => setTela("home")} />
     </div>
   );
 
@@ -878,8 +962,9 @@ export default function App() {
   if (tela === "simulado") return (
     <div style={{ ...s.page }}>
       <style>{FONTS}</style>
+      <ModalSenha />
       <Nav />
-      <SimuladoIA vendedor={vendedor} onVoltar={() => setTela("home")} />
+      <SimuladoIA vendedor={usuario?.nome} onVoltar={() => setTela("home")} />
     </div>
   );
 
@@ -892,6 +977,7 @@ export default function App() {
     return (
       <div style={{ ...s.page, background: C.fundo }}>
         <style>{FONTS}</style>
+        <ModalSenha />
         <Nav />
         <div style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 28 }}>
@@ -932,20 +1018,6 @@ export default function App() {
     );
   }
 
-  // ── LOGIN GESTOR ──
-  if (tela === "loginGestor") return (
-    <div style={{ ...s.page, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <style>{FONTS}</style>
-      <div style={{ width: "100%", maxWidth: 360, padding: 20 }}>
-        <div style={{ marginBottom: 28 }}><Logo /></div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: C.texto, fontFamily: MONT, marginBottom: 20 }}>Acesso Gestor</div>
-        <input style={{ ...s.input, marginBottom: 12 }} placeholder="Senha do gestor" type="password" value={senhaInput} onChange={e => setSenhaInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrarGestor()} autoFocus />
-        <button style={s.btnAmareloFull} onClick={entrarGestor}>Acessar painel</button>
-        <button style={{ ...s.btnAmareloFull, marginTop: 10, background: C.fundo, color: C.suave, border: `1px solid ${C.borda}` }} onClick={() => setTela(vendedor ? "home" : "login")}>← Voltar</button>
-      </div>
-    </div>
-  );
-
   // ── PAINEL GESTOR ──
   if (tela === "gestor") {
     const simulados = historico.filter(r => r.tipo === "simulado_ia" && r.nota);
@@ -976,7 +1048,8 @@ export default function App() {
     return (
       <div style={{ ...s.page, background: C.fundo }}>
         <style>{FONTS}</style>
-        <Topbar vendedor="Gestor" onHome={() => setTela("login")} onHistorico={() => {}} onGestor={() => {}} />
+        <ModalSenha />
+        <Topbar usuario={usuario} onHome={() => setTela("home")} onHistorico={() => {}} onGestor={() => {}} onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }} onSair={sair} />
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "40px 24px" }}>
           <div style={{ marginBottom: 28 }}>
             <div style={{ fontSize: 22, fontWeight: 800, color: C.texto, fontFamily: MONT }}>Painel do Gestor</div>
@@ -1046,7 +1119,7 @@ export default function App() {
             ))}
           </div>
 
-          <button style={s.btnAmarelo} onClick={() => setTela("login")}>← Sair do painel</button>
+          <button style={s.btnAmarelo} onClick={sair}>← Sair do painel</button>
         </div>
       </div>
     );
