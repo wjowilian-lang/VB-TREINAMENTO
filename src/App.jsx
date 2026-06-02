@@ -341,8 +341,8 @@ const Topbar = ({ usuario, onHome, onHistorico, onGestor, onTrocarSenha, onSair 
     <div style={{ cursor: "pointer" }} onClick={onHome}><Logo /></div>
     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
       {usuario && <span style={{ fontSize: 12, color: C.claro }}>Olá, <span style={{ color: C.amareloEscuro, fontWeight: 700 }}>{usuario.nome}</span></span>}
-      {usuario?.role === "vendedor" && <button style={s.btnGhost} onClick={onHistorico}>Meus resultados</button>}
-      {usuario?.role === "vendedor" && <button style={s.btnGhost} onClick={onTrocarSenha}>🔑 Senha</button>}
+      {usuario && <button style={s.btnGhost} onClick={onHistorico}>Meus resultados</button>}
+      {usuario && <button style={s.btnGhost} onClick={onTrocarSenha}>🔑 Senha</button>}
       {usuario?.role === "admin" && <button style={s.btnGestor} onClick={onGestor}>Painel Gestor</button>}
       {usuario && <button style={{ ...s.btnGhost, color: C.vermelho, borderColor: C.vermelho + "44" }} onClick={onSair}>Sair</button>}
     </div>
@@ -812,8 +812,8 @@ export default function App() {
     const u = autenticar(nomeInput, senhaInput);
     if (!u) { setErroLogin("Nome ou senha incorretos."); return; }
     setUsuario(u);
-    if (u.role === "admin") { carregarTodos(); setTela("gestor"); }
-    else setTela("home");
+    setTela("home");
+    if (u.role === "admin") carregarTodos();
   };
 
   const sair = () => { setUsuario(null); setNomeInput(""); setSenhaInput(""); setTela("login"); };
