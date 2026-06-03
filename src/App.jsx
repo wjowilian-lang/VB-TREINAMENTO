@@ -250,6 +250,9 @@ const callGPT = async (messages, systemPrompt, jsonMode = false) => {
   return data.choices[0].message.content;
 };
 
+const gerarCenario = async (segmento, perfis, dificuldade) => {
+  const prompt = `${VB_KNOWLEDGE}
+
 Você é um gerador de cenários de treinamento comercial para vendedores de VoIP.
 
 Gere um cenário realista para:
