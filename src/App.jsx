@@ -237,9 +237,18 @@ const callGPT = async (messages, systemPrompt, jsonMode = false) => {
   const res = await fetch("/api/openai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-
-const gerarCenario = async (segmento, perfis, dificuldade) => {
-  const prompt = `${VB_KNOWLEDGE}
+    body: JSON.stringify({
+      model: "gpt-4o",
+      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      temperature: 0.8,
+      max_tokens: 1000,
+      ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erro na API OpenAI");
+  return data.choices[0].message.content;
+};
 
 Você é um gerador de cenários de treinamento comercial para vendedores de VoIP.
 
