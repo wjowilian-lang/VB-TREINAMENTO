@@ -191,6 +191,80 @@ const QUIZ_QUESTIONS = [
     { texto: "VoIP consome muito pouco, qualquer internet de 10 Mbps aguenta centenas de ligações simultâneas", correta: false, explicacao: "Subestimado. Cada canal consome ~100 kbps. 10 Mbps aguentaria ~100 canais teóricos, mas com outros dados competindo, a margem é menor. Sempre qualificar." },
     { texto: "Não existe padrão — depende exclusivamente da qualidade da operadora", correta: false, explicacao: "Existe sim referência técnica. Conhecer isso é fundamental para qualificar clientes e evitar problema de qualidade pós-venda." },
   ]},
+  // VENDAS VB
+  { id: 17, topico: "Vendas VB", dificuldade: "basica", enunciado: "Um cliente diz: 'Preciso pensar, você me manda uma proposta por e-mail.' Qual a melhor resposta?", opcoes: [
+    { texto: "Claro! Mas antes de montar a proposta, posso fazer 2 perguntas rápidas para personalizar os valores? Quantos ramais você precisa e qual seu prazo ideal para implantar?", correta: true, explicacao: "Perfeito! Nunca mande proposta genérica. Qualifique antes — assim a proposta chega personalizada e você tem um motivo para ligar de volta com urgência real." },
+    { texto: "Perfeito, vou montar uma proposta completa com todos os nossos planos e te envio ainda hoje!", correta: false, explicacao: "Proposta com 'todos os planos' confunde e não gera urgência. Sempre personalize — menos opções, mais assertividade." },
+    { texto: "Tudo bem, mas saiba que nossos preços sobem no mês que vem, então quanto antes você decidir melhor.", correta: false, explicacao: "Urgência falsa é uma das piores técnicas. Destrói credibilidade se o cliente descobrir que não é verdade. Nunca faça isso." },
+  ]},
+  { id: 18, topico: "Vendas VB", dificuldade: "basica", enunciado: "Qual é o principal gatilho de fechamento que a VB recomenda usar em toda negociação?", opcoes: [
+    { texto: "Os 14 dias de teste grátis, sem cartão de crédito e sem compromisso — o cliente experimenta o serviço sem risco nenhum, o que elimina a principal barreira de decisão", correta: true, explicacao: "Exato! O trial gratuito é o argumento mais poderoso da VB. Remove o risco do cliente, acelera a decisão e permite que o próprio serviço se venda durante o teste." },
+    { texto: "O desconto progressivo — quanto mais ramais, menor o preço por ramal", correta: false, explicacao: "Desconto é um argumento válido mas não é o principal gatilho. Usar desconto como primeiro argumento desvaloriza o produto." },
+    { texto: "O suporte 24h — diferencial que os concorrentes não têm", correta: false, explicacao: "Suporte 24h é um diferencial excelente, mas para objeção de qualidade/confiança. O gatilho de fechamento principal é o teste grátis de 14 dias." },
+  ]},
+  { id: 19, topico: "Vendas VB", dificuldade: "intermediaria", enunciado: "Um cliente satisfeito com a Vivo Empresas diz: 'Já tenho telefonia, não preciso trocar.' Como você aborda?", opcoes: [
+    { texto: "Entendo! A maioria dos nossos clientes também achava isso antes de testar. Posso te perguntar: você usa gravação de chamadas, relatórios de ligações e app mobile hoje? Se não, você está pagando mais por menos recurso.", correta: true, explicacao: "Perfeito! Não ataque a Vivo diretamente. Faça perguntas que revelam o que ele NÃO tem. Deixe ele perceber a lacuna sozinho — muito mais eficaz que comparar preços." },
+    { texto: "A Vivo é muito cara e o suporte deles é péssimo — com a VB você paga menos e tem muito mais qualidade.", correta: false, explicacao: "Falar mal de concorrente é a pior abordagem. Gera defensividade e passa imagem de desespero. Nunca deprecie o que o cliente usa." },
+    { texto: "Tudo bem, quando precisar trocar pode me chamar!", correta: false, explicacao: "Desistir sem explorar é perder a venda. Sempre investigue — ele pode estar insatisfeito com algo sem perceber que existe alternativa melhor." },
+  ]},
+  { id: 20, topico: "Vendas VB", dificuldade: "intermediaria", enunciado: "Quando você deve passar um lead para a especialista Thais?", opcoes: [
+    { texto: "Quando a empresa tem 25 ou mais usuários, ou 3 ou mais filiais — são leads grandes que exigem uma proposta técnica mais elaborada e negociação especializada", correta: true, explicacao: "Correto! Leads grandes têm complexidade diferente: múltiplos tomadores de decisão, integração com sistemas existentes, volume de minutos alto. A Thais tem o preparo para esse perfil." },
+    { texto: "Quando o cliente faz muitas perguntas técnicas que você não sabe responder", correta: false, explicacao: "Não é critério de tamanho nem de dificuldade técnica — é critério de porte. Questões técnicas você deve aprender a responder. Transferir por isso demonstra despreparo." },
+    { texto: "Quando o cliente pede desconto acima de 20%", correta: false, explicacao: "Desconto não é o critério. O critério é porte: 25+ usuários ou 3+ filiais. Desconto é uma negociação que qualquer vendedor deve conduzir com seu gestor." },
+  ]},
+  // SPIN SELLING
+  { id: 21, topico: "SPIN Selling", dificuldade: "basica", enunciado: "O que significa cada letra do SPIN Selling e como aplicar na venda VoIP?", opcoes: [
+    { texto: "Situação (como é hoje), Problema (o que incomoda), Implicação (o que esse problema causa no negócio), Necessidade (o que ele ganha resolvendo). Ex: S='Quantos ramais você tem?' P='A ligação cai muito?' I='Isso faz perder cliente?' N='Imagina ter estabilidade 99,99%...'", correta: true, explicacao: "Excelente! SPIN é a espinha dorsal da venda consultiva. A pergunta de Implicação é a mais poderosa — faz o cliente sentir o custo do problema atual antes de ouvir a solução." },
+    { texto: "Sistema, Produto, Instalação, Negociação — as 4 etapas do processo de venda da VB", correta: false, explicacao: "Errado. SPIN é uma metodologia de perguntas criada por Neil Rackham, não etapas de processo. Situação, Problema, Implicação, Necessidade." },
+    { texto: "É uma técnica de fechamento onde você apresenta o produto por partes para não assustar o cliente com o preço", correta: false, explicacao: "Errado. SPIN é sobre fazer as perguntas certas para o cliente descobrir sozinho que precisa da solução — não é técnica de apresentação." },
+  ]},
+  { id: 22, topico: "SPIN Selling", dificuldade: "intermediaria", enunciado: "Qual é a pergunta de IMPLICAÇÃO mais eficaz para uma clínica médica com problemas de ligação caindo?", opcoes: [
+    { texto: "'Quando uma ligação cai no momento em que o paciente tenta agendar uma consulta, o que acontece? Ele tenta de novo ou vai buscar outra clínica?' — faz o cliente calcular o custo real da perda.", correta: true, explicacao: "Perfeita pergunta de implicação! Ela faz o cliente visualizar o paciente indo para o concorrente. O custo emocional e financeiro fica concreto — muito mais poderoso que falar em porcentagem de uptime." },
+    { texto: "'Você sabia que 30% das ligações VoIP mal configuradas caem antes de 1 minuto?' — dado técnico que justifica a troca", correta: false, explicacao: "Dado genérico sem contexto não é implicação. Implicação é personalizada, conecta o problema do CLIENTE ao impacto no NEGÓCIO dele especificamente." },
+    { texto: "'Você não acha que isso é um problema sério que precisa ser resolvido urgente?'", correta: false, explicacao: "Pergunta fechada que parece pressão. O cliente vai concordar por educação mas não vai sentir o problema. Implicação boa é aberta e faz o cliente raciocinar." },
+  ]},
+  // OBJEÇÕES
+  { id: 23, topico: "Objeções", dificuldade: "basica", enunciado: "Cliente diz: 'Tá caro. A concorrente cobra metade do preço.' Como você responde?", opcoes: [
+    { texto: "Entendo a comparação. Me fala: essa outra operadora tem suporte humano 24h? Tem ISO 9001? Qual o tempo de ativação? Às vezes o que parece mais barato acaba custando mais caro em problema, tempo parado e suporte que não aparece.", correta: true, explicacao: "Correto! Nunca brigue no preço. Mude o critério de comparação — faça o cliente comparar valor total, não só mensalidade. Suporte 24h e ISO são argumentos concretos que a maioria dos concorrentes não tem." },
+    { texto: "Posso verificar se consigo um desconto especial para você — qual o preço que a concorrente cobrou exatamente?", correta: false, explicacao: "Ir direto para desconto antes de defender o valor é a pior resposta. Você perdeu margem sem nem tentar mostrar os diferenciais." },
+    { texto: "Nosso preço é esse porque temos a melhor qualidade do mercado — você paga pelo que leva.", correta: false, explicacao: "Vago e arrogante. 'Melhor qualidade' sem prova não convence ninguém. Use argumentos concretos: suporte 24h, ISO 9001, 99,99% uptime, onboarding dedicado." },
+  ]},
+  { id: 24, topico: "Objeções", dificuldade: "intermediaria", enunciado: "Cliente diz: 'Preciso de autorização do meu sócio antes de decidir qualquer coisa.' O que você faz?", opcoes: [
+    { texto: "Sem problema! Para facilitar para vocês dois, posso fazer uma apresentação rápida de 20 minutos com você e o sócio juntos. Quando seria possível? Assim ele tira as dúvidas na hora e vocês decidem juntos.", correta: true, explicacao: "Correto! Nunca deixe o processo de venda nas mãos do cliente. Você vai perder o controle. Proponha incluir o decisor na próxima conversa — você conduz, não ele." },
+    { texto: "Tudo bem! Te mando um material completo que você pode encaminhar para o sócio analisar.", correta: false, explicacao: "Material sem você presente é o caminho certo para a venda morrer. O sócio vai ler por cima, não vai entender os diferenciais e vai dizer não por precaução." },
+    { texto: "Você mesmo consegue me dar uma ideia do que o sócio vai perguntar? Assim eu preparo uma resposta para cada objeção.", correta: false, explicacao: "Curioso mas ineficaz. Você vai preparar respostas que nunca vão chegar ao sócio. Foque em incluir o decisor, não em preparar respostas por procuração." },
+  ]},
+  // TÉCNICO AVANÇADO
+  { id: 25, topico: "Tronco SIP", dificuldade: "intermediaria", enunciado: "Cliente pergunta: 'Quantos canais SIP simultâneos eu preciso para um call center de 20 agentes?' Como você responde?", opcoes: [
+    { texto: "Depende do perfil de uso. Se todos ligam ao mesmo tempo, precisa de 20 canais. Na prática, com pausas e tempo em fila, empresas com 20 agentes costumam usar entre 12 e 16 canais simultâneos. Recomendo começar com 15 e monitorar os relatórios de chamadas para ajustar.", correta: true, explicacao: "Resposta técnica e comercialmente inteligente! Mostrou conhecimento real (não é 1:1 necessariamente), usou os relatórios como argumento de valor e deixou margem para expansão." },
+    { texto: "20 agentes = 20 canais SIP. É sempre um para um.", correta: false, explicacao: "Tecnicamente defensável mas comercialmente ingênuo. Na prática call centers têm ociosidade — nem todos ligam exatamente ao mesmo tempo. Dimensionar bem demonstra expertise." },
+    { texto: "Para call center precisa de solução corporativa especial — não posso dimensionar sem visita técnica.", correta: false, explicacao: "Exagero que afasta o cliente. Um vendedor VB deve conseguir fazer uma estimativa inicial de canais com informações básicas de uso." },
+  ]},
+  { id: 26, topico: "PABX Virtual", dificuldade: "intermediaria", enunciado: "Um cliente pergunta se pode integrar o PABX Virtual da VB com o CRM Salesforce dele. O que você responde?", opcoes: [
+    { texto: "Sim! A VB tem integração via API com os principais CRMs do mercado, incluindo Salesforce. Isso permite registrar chamadas automaticamente no histórico do cliente, clicar para ligar direto do CRM e ver quem está ligando antes de atender. Nosso time de onboarding cuida da configuração.", correta: true, explicacao: "Resposta completa! Confirmou a integração, descreveu os benefícios práticos (não só 'sim temos') e já posicionou o onboarding como suporte — elimina o medo de implantação complexa." },
+    { texto: "Depende da versão do Salesforce que você usa — precisaria verificar com o técnico antes de confirmar.", correta: false, explicacao: "Resposta que gera insegurança desnecessária. A VB tem integração com os principais CRMs — confirme isso com confiança e deixe os detalhes técnicos para o onboarding." },
+    { texto: "Integração com CRM é possível mas é um projeto separado com custo adicional.", correta: false, explicacao: "Errado e desmotivador. O onboarding e suporte à integração são inclusos — não é projeto separado com custo extra." },
+  ]},
+  { id: 27, topico: "Portabilidade", dificuldade: "intermediaria", enunciado: "Um cliente tem 5 números fixos de DDR para portar para a VB. Como você explica o processo e o que pode complicar?", opcoes: [
+    { texto: "Portamos todos os 5 ao mesmo tempo no mesmo processo. O prazo é de 15 dias úteis. O que pode complicar: titular diferente entre os números, dívida com a operadora atual ou número usado como conta de energia/banco. Durante o processo, a VB ativa provisórios para zero interrupção.", correta: true, explicacao: "Completo e honesto. Mencionou as causas reais de atraso (titular, dívida, número vinculado) sem assustar — e reforçou a continuidade com provisório. Transparência aqui constrói confiança." },
+    { texto: "Portabilidade de DDR é mais complexa, pode levar até 60 dias e tem custo adicional por número.", correta: false, explicacao: "Informação errada. O prazo padrão é 15 dias úteis para fixo, independente de ser DDR. Custo adicional por número também não procede." },
+    { texto: "Sem problema! É simples, normalmente fica pronto em uma semana.", correta: false, explicacao: "Prometer prazo menor que o real (15 dias úteis) gera expectativa errada e reclamação garantida. Sempre seja preciso com prazos." },
+  ]},
+  { id: 28, topico: "VoIP Geral", dificuldade: "intermediaria", enunciado: "Um cliente pergunta o que é jitter e por que afeta a qualidade da chamada VoIP.", opcoes: [
+    { texto: "Jitter é a variação no tempo de chegada dos pacotes de voz pela internet. Quando os pacotes chegam em tempos irregulares, o áudio fica entrecortado ou robótico. Se o roteador tiver QoS configurado, ele prioriza esses pacotes e o jitter cai. Menos de 30ms é o ideal para VoIP.", correta: true, explicacao: "Explicação técnica e prática. Conectou o conceito (jitter) ao sintoma (áudio entrecortado) e à solução (QoS). O dado de referência (30ms) demonstra domínio técnico sem ser pedante." },
+    { texto: "Jitter é quando a internet fica lenta e as ligações travam. Acontece quando muita gente usa a rede ao mesmo tempo.", correta: false, explicacao: "Confunde jitter com congestionamento. São problemas diferentes. Jitter é variação de latência, não lentidão geral. Um cliente técnico vai perceber essa imprecisão." },
+    { texto: "Jitter é um problema que a VB resolve no nosso servidor — o cliente não precisa se preocupar com isso.", correta: false, explicacao: "Errado e irresponsável. Jitter é causado pela rede local e pelo link de internet do cliente — a VB não controla isso. Atribuir a responsabilidade errada vai criar problema de suporte." },
+  ]},
+  { id: 29, topico: "QoS", dificuldade: "intermediaria", enunciado: "Um cliente tem 50 Mbps de internet e 10 ramais VoIP. O gerente de TI diz que mesmo assim tem queda de qualidade nas ligações. Qual o diagnóstico mais provável?", opcoes: [
+    { texto: "50 Mbps é mais que suficiente para 10 ramais (precisa de ~1 Mbps para voz). O problema provavelmente é falta de QoS no roteador — o tráfego de voz está competindo com downloads, vídeos e outros dados sem priorização. Solução: configurar QoS ou VLAN de voz.", correta: true, explicacao: "Diagnóstico correto! Banda não é tudo — priorização é fundamental. Mostrar esse raciocínio ao TI demonstra que você entende de rede, não só de telefonia. Gera muita credibilidade." },
+    { texto: "50 Mbps não é suficiente para VoIP corporativo. Recomendo contratar pelo menos 100 Mbps dedicados.", correta: false, explicacao: "Completamente errado. 50 Mbps aguenta facilmente 10 ramais (usa ~1 Mbps). Recomendar upgrade de link desnecessário vai destruir sua credibilidade com o TI." },
+    { texto: "O problema deve ser no servidor da VB — vou abrir um chamado de qualidade para a equipe técnica investigar.", correta: false, explicacao: "Culpar o servidor antes de investigar a rede local é o erro mais comum. Com banda suficiente, o problema é quase sempre na rede do cliente. Investigue antes de abrir chamado." },
+  ]},
+  { id: 30, topico: "Vendas VB", dificuldade: "intermediaria", enunciado: "No fim de uma boa conversa, o cliente demonstra interesse mas não fecha. Qual a sequência ideal de próximos passos?", opcoes: [
+    { texto: "Propor o teste grátis de 14 dias como próximo passo concreto, definir uma data para ligar e verificar a experiência dele, e agendar uma segunda reunião para converter o trial em contrato.", correta: true, explicacao: "Sequência perfeita! Trial → acompanhamento → conversão. Cada etapa tem um objetivo claro e um compromisso do cliente. Você mantém o controle do processo sem pressionar." },
+    { texto: "Enviar a proposta por e-mail e aguardar o retorno dele quando estiver pronto para decidir.", correta: false, explicacao: "Perder o controle do processo é perder a venda. Sem próximos passos definidos, o cliente esfria, aparece um imprevisto e você nunca mais consegue reagendar." },
+    { texto: "Dar um desconto de 10% se ele fechar ainda essa semana para criar urgência.", correta: false, explicacao: "Desconto sem pedido é queimar margem. Se ele não pediu desconto, não ofereça. Crie urgência real (trial, onboarding reservado) — não artificial (desconto inventado)." },
+  ]},
 ];
 
 // ─── PERFIS DE CENÁRIO PARA GERAÇÃO ──────────────────────────────
@@ -257,11 +331,22 @@ const callGPT = async (messages, systemPrompt, jsonMode = false) => {
   return data.choices[0].message.content;
 };
 
-const gerarCenario = async (segmento, perfis, dificuldade) => {
+const gerarCenario = async (segmento, perfis, dificuldade, historicoVendedor = []) => {
+  const resumoHistorico = historicoVendedor.length > 0 ? `
+HISTÓRICO DO VENDEDOR (últimos ${historicoVendedor.length} simulados):
+${historicoVendedor.map((s, i) => `Simulado ${i+1}: nota ${s.nota?.toFixed(1)} | pontos fracos: ${s.avaliacao?.melhorias?.join(", ") || "não informado"} | encerramento: ${s.avaliacao?.encerramento || "?"}`).join("\n")}
+
+COM BASE NESSE HISTÓRICO:
+- Se o vendedor tem nota baixa em qualificação, gere um cliente que se abre rápido só se qualificado corretamente
+- Se tem nota baixa em objeções, gere objeções mais fortes que o habitual
+- Se tem nota baixa em fechamento, gere um cliente que precisa ser explicitamente convidado para o trial
+- Ajuste a dificuldade real do cenário para atacar os pontos fracos identificados
+` : "";
+
   const prompt = `${VB_KNOWLEDGE}
 
 Você é um gerador de cenários de treinamento comercial para vendedores de VoIP.
-
+${resumoHistorico}
 Gere um cenário realista para:
 - Segmento: ${segmento}
 - Perfil do cliente: ${perfis.join(" + ")}
@@ -395,12 +480,13 @@ const Logo = () => (
   </div>
 );
 
-const Topbar = ({ usuario, onHome, onHistorico, onGestor, onTrocarSenha, onSair }) => (
+const Topbar = ({ usuario, onHome, onHistorico, onRanking, onGestor, onTrocarSenha, onSair }) => (
   <div style={s.topbar}>
     <div style={{ cursor: "pointer" }} onClick={onHome}><Logo /></div>
     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
       {usuario && <span style={{ fontSize: 12, color: C.claro }}>Olá, <span style={{ color: C.amareloEscuro, fontWeight: 700 }}>{usuario.nome}</span></span>}
       {usuario && <button style={s.btnGhost} onClick={onHistorico}>Meus resultados</button>}
+      {usuario?.role === "admin" && <button style={s.btnGhost} onClick={onRanking}>🏆 Ranking</button>}
       {usuario && <button style={s.btnGhost} onClick={onTrocarSenha}>🔑 Senha</button>}
       {usuario?.role === "admin" && <button style={s.btnGestor} onClick={onGestor}>Painel Gestor</button>}
       {usuario && <button style={{ ...s.btnGhost, color: C.vermelho, borderColor: C.vermelho + "44" }} onClick={onSair}>Sair</button>}
@@ -431,7 +517,7 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
   const iniciar = () => {
     const filtradas = QUIZ_QUESTIONS.filter(q =>
       (topicoSel ? q.topico === topicoSel : true) && q.dificuldade === dificuldade
-    ).sort(() => Math.random() - 0.5).slice(0, 8);
+    ).sort(() => Math.random() - 0.5).slice(0, 10);
     if (filtradas.length === 0) { alert("Nenhuma questão encontrada para essa combinação."); return; }
     setQuestoes(filtradas);
     setIdx(0); setSelecionada(null); setPontos(0); setDetalhes([]);
@@ -448,7 +534,7 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
     setDetalhes(novosDetalhes);
     setTimeout(async () => {
       if (idx + 1 >= questoes.length) {
-        const nota = Math.round((novosPontos / (questoes.length * 10)) * 10);
+        const nota = parseFloat(((novosPontos / (questoes.length * 10)) * 10).toFixed(1));
         await salvarSimulacao({ vendedor, tipo: "quiz", topico: topicoSel || "Todos", dificuldade, nota, pontos: novosPontos, total_possivel: questoes.length * 10, questoes: questoes.length, detalhes: novosDetalhes });
         setFase("resultado");
       } else { setIdx(idx + 1); setSelecionada(null); }
@@ -556,7 +642,7 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
 };
 
 // ─── SIMULADO IA ──────────────────────────────────────────────────
-const SimuladoIA = ({ vendedor, onVoltar }) => {
+const SimuladoIA = ({ vendedor, onVoltar, historicoVendedor = [] }) => {
   const [fase, setFase] = useState("config"); // config | gerando | chat | avaliando | resultado
   const [segmento, setSegmento] = useState(SEGMENTOS[0]);
   const [perfis, setPerfis] = useState(["frio"]);
@@ -583,7 +669,7 @@ const SimuladoIA = ({ vendedor, onVoltar }) => {
     try {
       const seg = segmento === "Aleatório" ? SEGMENTOS[Math.floor(Math.random() * SEGMENTOS.length)] : segmento;
       const perfilLabels = perfis.map(p => PERFIS_CLIENTE.find(x => x.id === p)?.label || p);
-      const c = await gerarCenario(seg, perfilLabels, dificuldade);
+      const c = await gerarCenario(seg, perfilLabels, dificuldade, historicoVendedor.slice(0, 5));
       setCenario(c);
       const primeiraMsg = { role: "lead", content: c.abertura, ts: new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) };
       setMensagens([primeiraMsg]);
@@ -895,15 +981,12 @@ export default function App() {
     setSenhaAtual(""); setSenhaNova(""); setSenhaConfirm("");
   };
 
-  const carregarTodos = async () => { setLoading(true); const dados = await buscarSimulacoes(null); console.log("[VB] carregarTodos resultado:", dados.length); setHistorico(dados); setLoading(false); return dados; };
-  const verMeus = async () => { setTela("historico"); setLoading(true); const dados = await buscarSimulacoes(usuario.nome); setHistorico(dados); setLoading(false); };
+  const carregarTodos = async () => { setLoading(true); const dados = await buscarSimulacoes(null); setHistorico(dados); setLoading(false); return dados; };
+  const verMeus = async () => { setTela("historico"); setLoading(true); const dados = await buscarSimulacoes(null); setHistorico(dados); setLoading(false); };
 
-  // Restaurar dados ao carregar com sessão salva
+  // Sempre carregar todos para o ranking funcionar para todos
   useEffect(() => {
-    if (usuarioSalvo) {
-      if (usuarioSalvo.role === "admin") { carregarTodos(); }
-      else { buscarSimulacoes(usuarioSalvo.nome).then(dados => { console.log("[VB] useEffect vendedor dados:", dados.length); setHistorico(dados); }); }
-    }
+    if (usuarioSalvo) { carregarTodos(); }
   }, []);
 
   const Nav = () => (
@@ -911,6 +994,7 @@ export default function App() {
       usuario={usuario}
       onHome={() => setTela(usuario ? "home" : "login")}
       onHistorico={verMeus}
+      onRanking={() => setTela("ranking")}
       onGestor={async () => { const dados = await carregarTodos(); setTela("gestor"); }}
       onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }}
       onSair={sair}
@@ -967,17 +1051,50 @@ export default function App() {
   );
 
   // ── HOME ──
-  if (tela === "home") return (
+  if (tela === "home") {
+    // Calcular posição no ranking para vendedores
+    const todosVendedoresRanking = [...new Set(historico.map(r => r.vendedor))].map(v => {
+      const sims = historico.filter(r => r.vendedor === v && r.tipo === "simulado_ia" && r.nota);
+      const qzs = historico.filter(r => r.vendedor === v && r.tipo === "quiz" && r.nota);
+      const mediaSim = sims.length > 0 ? sims.reduce((a, b) => a + b.nota, 0) / sims.length : 0;
+      const mediaQz = qzs.length > 0 ? qzs.reduce((a, b) => a + b.nota, 0) / qzs.length : 0;
+      const media = sims.length > 0 ? mediaSim : mediaQz;
+      return { nome: v, media: parseFloat(media.toFixed(1)), total: sims.length + qzs.length };
+    }).sort((a, b) => b.media - a.media);
+    const posicao = todosVendedoresRanking.findIndex(v => v.nome === usuario?.nome) + 1;
+    const totalRanking = todosVendedoresRanking.length;
+    const meusDados = todosVendedoresRanking.find(v => v.nome === usuario?.nome);
+
+    return (
     <div style={s.page}>
       <style>{FONTS}</style>
       <ModalSenha />
       <Nav />
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "52px 24px" }}>
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{ display: "inline-block", background: "#FFF8E1", border: `1px solid ${C.amarelo}66`, color: C.amareloEscuro, fontSize: 10, fontWeight: 700, padding: "4px 14px", borderRadius: 0, marginBottom: 18, letterSpacing: 2, fontFamily: MONT }}>PLATAFORMA DE TREINAMENTO · IA</div>
           <h1 style={{ fontSize: 28, fontWeight: 900, color: C.texto, margin: "0 0 12px", lineHeight: 1.25, fontFamily: MONT }}>Treine com inteligência artificial<br /><span style={{ color: C.amareloEscuro }}>antes de atender de verdade</span></h1>
           <p style={{ fontSize: 13, color: C.suave, lineHeight: 1.8 }}>Dois módulos: quiz técnico VoIP para dominar os conceitos, e simulado com cliente IA para praticar vendas reais.</p>
         </div>
+
+        {/* Badge de posição no ranking — visível para todos */}
+        {posicao > 0 && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginBottom: 36, padding: "18px 28px", background: posicao === 1 ? C.amarelo : posicao <= 3 ? "#FFF8E1" : C.fundo, border: `1.5px solid ${posicao === 1 ? C.amareloEscuro : C.borda}` }}>
+            <div style={{ fontSize: 36, fontWeight: 900, color: posicao === 1 ? C.preto : C.amareloEscuro, fontFamily: MONT, lineHeight: 1 }}>
+              {posicao === 1 ? "🏆" : posicao === 2 ? "🥈" : posicao === 3 ? "🥉" : `#${posicao}`}
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: C.texto, fontFamily: MONT }}>
+                Você está em <span style={{ color: posicao <= 3 ? C.amareloEscuro : C.texto }}>{posicao}º lugar</span> no ranking da equipe
+              </div>
+              <div style={{ fontSize: 11, color: C.suave, marginTop: 3 }}>
+                Média geral: <strong style={{ color: corNota(meusDados?.media || 0) }}>{meusDados?.media?.toFixed(1) || "—"}</strong>
+                {" · "}{meusDados?.total || 0} atividades realizadas
+                {usuario?.role === "admin" && <span>{" · "}<span style={{ color: C.azul, cursor: "pointer", textDecoration: "underline" }} onClick={() => setTela("ranking")}>Ver ranking completo →</span></span>}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           {/* Treino Técnico */}
@@ -988,14 +1105,14 @@ export default function App() {
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: C.azul }} />
             <div style={{ fontSize: 32, marginBottom: 14 }}>🎯</div>
             <div style={{ fontSize: 17, fontWeight: 800, color: C.texto, fontFamily: MONT, marginBottom: 10 }}>Treino Técnico VoIP</div>
-            <div style={{ fontSize: 13, color: C.suave, lineHeight: 1.7, marginBottom: 20 }}>Quiz com questões sobre SIP, PABX Virtual, Tronco SIP, Portabilidade, DDR, URA, QoS, Codecs e mais. Feedback imediato com explicação detalhada.</div>
+            <div style={{ fontSize: 13, color: C.suave, lineHeight: 1.7, marginBottom: 20 }}>Quiz com questões sobre SIP, PABX Virtual, Tronco SIP, Portabilidade, DDR, URA, QoS, Codecs, Vendas e SPIN Selling. Feedback imediato com explicação detalhada.</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
-              {["SIP", "PABX", "Portabilidade", "Codecs", "QoS", "DDR", "URA"].map(t => (
+              {["SIP", "PABX", "Portabilidade", "Codecs", "QoS", "DDR", "Vendas"].map(t => (
                 <span key={t} style={s.tag(C.azul)}>{t}</span>
               ))}
             </div>
             <button style={s.btnAmareloFull}>Iniciar quiz →</button>
-            <div style={{ textAlign: "center", marginTop: 10, fontSize: 11, color: C.claro }}>16 questões · 2 níveis de dificuldade</div>
+            <div style={{ textAlign: "center", marginTop: 10, fontSize: 11, color: C.claro }}>30 questões · 2 níveis de dificuldade</div>
           </div>
 
           {/* Simulado IA */}
@@ -1013,12 +1130,105 @@ export default function App() {
               ))}
             </div>
             <button style={s.btnAmareloFull}>Iniciar simulado →</button>
-            <div style={{ textAlign: "center", marginTop: 10, fontSize: 11, color: C.claro }}>Conversa livre · Avaliação automática por IA</div>
+            <div style={{ textAlign: "center", marginTop: 10, fontSize: 11, color: C.claro }}>Conversa livre · Avaliação automática por IA · Cenário adaptado ao seu histórico</div>
           </div>
         </div>
       </div>
     </div>
-  );
+    );
+  }
+
+  // ── RANKING PÚBLICO ──
+  if (tela === "ranking") {
+    const rankingData = [...new Set(historico.map(r => r.vendedor))].map(v => {
+      const sims = historico.filter(r => r.vendedor === v && r.tipo === "simulado_ia" && r.nota);
+      const qzs = historico.filter(r => r.vendedor === v && r.tipo === "quiz" && r.nota);
+      const mediaSim = sims.length > 0 ? sims.reduce((a, b) => a + b.nota, 0) / sims.length : 0;
+      const mediaQz = qzs.length > 0 ? qzs.reduce((a, b) => a + b.nota, 0) / qzs.length : 0;
+      const media = sims.length > 0 ? mediaSim : (mediaQz > 0 ? mediaQz : 0);
+      const ultimoSim = sims[0];
+      const tendencia = sims.length >= 2 ? (sims[0].nota - sims[1].nota) : 0;
+      return { nome: v, media: parseFloat(media.toFixed(1)), mediaSim: parseFloat(mediaSim.toFixed(1)), mediaQz: parseFloat(mediaQz.toFixed(1)), totalSim: sims.length, totalQz: qzs.length, tendencia, ultimaNota: ultimoSim?.nota };
+    }).filter(v => v.media > 0).sort((a, b) => b.media - a.media);
+
+    const medalhas = ["🥇", "🥈", "🥉"];
+    return (
+      <div style={{ ...s.page, background: C.fundo }}>
+        <style>{FONTS}</style>
+        <ModalSenha />
+        <Nav />
+        <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
+            <div>
+              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontFamily: MONT, fontWeight: 700, marginBottom: 6 }}>RANKING DA EQUIPE</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: C.texto, fontFamily: MONT }}>Classificação Geral</div>
+              <div style={{ fontSize: 12, color: C.suave, marginTop: 4 }}>{rankingData.length} vendedores · atualizado agora</div>
+            </div>
+            <button style={s.btnGhost} onClick={() => setTela("home")}>← Voltar</button>
+          </div>
+
+          {/* Top 3 destaque */}
+          {rankingData.length >= 3 && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr 1fr", gap: 12, marginBottom: 24, alignItems: "flex-end" }}>
+              {[rankingData[1], rankingData[0], rankingData[2]].map((v, i) => {
+                const posReal = i === 0 ? 2 : i === 1 ? 1 : 3;
+                const alturas = [120, 150, 110];
+                const isEu = v.nome === usuario?.nome;
+                return (
+                  <div key={v.nome} style={{ background: posReal === 1 ? C.amarelo : C.branco, border: `1.5px solid ${posReal === 1 ? C.amareloEscuro : C.borda}`, padding: "20px 16px", textAlign: "center", height: alturas[i], display: "flex", flexDirection: "column", justifyContent: "center", gap: 4 }}>
+                    <div style={{ fontSize: 28 }}>{medalhas[posReal - 1]}</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: posReal === 1 ? C.preto : C.texto, fontFamily: MONT }}>{v.nome}{isEu ? " 👈" : ""}</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: posReal === 1 ? C.preto : corNota(v.media), fontFamily: MONT }}>{v.media.toFixed(1)}</div>
+                    <div style={{ fontSize: 10, color: posReal === 1 ? "#0006" : C.claro }}>{v.totalSim}s · {v.totalQz}q</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Lista completa */}
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, overflow: "hidden" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "36px 1fr 80px 80px 80px 70px", gap: 8, padding: "10px 18px", background: C.fundo, borderBottom: `1px solid ${C.borda}` }}>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>#</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>VENDEDOR</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>SIMULADOS</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>QUIZ</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>TENDÊNCIA</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "right" }}>MÉDIA</div>
+            </div>
+            {rankingData.map((v, i) => {
+              const isEu = v.nome === usuario?.nome;
+              return (
+                <div key={v.nome} style={{ display: "grid", gridTemplateColumns: "36px 1fr 80px 80px 80px 70px", gap: 8, padding: "14px 18px", borderBottom: i < rankingData.length - 1 ? `1px solid ${C.borda}` : "none", alignItems: "center", background: isEu ? "#FFF8E1" : "transparent" }}>
+                  <div style={{ width: 24, height: 24, background: i < 3 ? C.amarelo : C.fundo, display: "flex", alignItems: "center", justifyContent: "center", fontSize: i < 3 ? 14 : 11, fontWeight: 800, color: i < 3 ? C.preto : C.suave, fontFamily: MONT }}>
+                    {i < 3 ? medalhas[i] : i + 1}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: C.texto, fontFamily: MONT }}>{v.nome}{isEu ? <span style={{ fontSize: 10, color: C.amareloEscuro, marginLeft: 6 }}>← você</span> : ""}</div>
+                    <div style={{ fontSize: 10, color: C.claro }}>{v.totalSim + v.totalQz} atividades</div>
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: v.mediaSim > 0 ? corNota(v.mediaSim) : C.claro, fontFamily: MONT }}>{v.mediaSim > 0 ? v.mediaSim.toFixed(1) : "—"}</div>
+                    <div style={{ fontSize: 9, color: C.claro }}>{v.totalSim} sim</div>
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: v.mediaQz > 0 ? corNota(v.mediaQz) : C.claro, fontFamily: MONT }}>{v.mediaQz > 0 ? v.mediaQz.toFixed(1) : "—"}</div>
+                    <div style={{ fontSize: 9, color: C.claro }}>{v.totalQz} quiz</div>
+                  </div>
+                  <div style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: v.tendencia > 0 ? C.verde : v.tendencia < 0 ? C.vermelho : C.claro, fontFamily: MONT }}>
+                    {v.tendencia > 0 ? `↑ +${v.tendencia.toFixed(1)}` : v.tendencia < 0 ? `↓ ${v.tendencia.toFixed(1)}` : "—"}
+                  </div>
+                  <div style={{ textAlign: "right", fontSize: 20, fontWeight: 900, color: corNota(v.media), fontFamily: MONT }}>{v.media.toFixed(1)}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button style={{ ...s.btnAmareloFull, marginTop: 20 }} onClick={() => setTela("home")}>← Voltar ao início</button>
+        </div>
+      </div>
+    );
+  }
 
   // ── QUIZ ──
   if (tela === "quiz") return (
@@ -1036,7 +1246,7 @@ export default function App() {
       <style>{FONTS}</style>
       <ModalSenha />
       <Nav />
-      <SimuladoIA vendedor={usuario?.nome} onVoltar={() => setTela("home")} />
+      <SimuladoIA vendedor={usuario?.nome} onVoltar={() => setTela("home")} historicoVendedor={historico.filter(r => r.tipo === "simulado_ia" && r.vendedor === usuario?.nome && r.nota)} />
     </div>
   );
 
