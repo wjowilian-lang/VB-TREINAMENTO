@@ -14,7 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const OPENAI_KEY = "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";
 
 // ─── USUÁRIOS ─────────────────────────────────────────────────────
 const USUARIOS_INICIAIS = [
@@ -233,39 +232,22 @@ const buscarSimulacoes = async (vendedor) => {
 };
 
 // ─── OPENAI API ───────────────────────────────────────────────────
+// Chama /api/gpt (Vercel Serverless Function) para evitar bloqueio de CORS
 const callGPT = async (messages, systemPrompt, jsonMode = false) => {
-  // Tenta direto primeiro, cai para proxy CORS se falhar
-  const endpoints = [
-    "https://api.openai.com/v1/chat/completions",
-    "https://corsproxy.io/?https://api.openai.com/v1/chat/completions",
-    "https://cors-anywhere.herokuapp.com/https://api.openai.com/v1/chat/completions",
-  ];
-
-  const body = JSON.stringify({
-    model: "gpt-4o",
-    messages: [{ role: "system", content: systemPrompt }, ...messages],
-    temperature: 0.8,
-    max_tokens: 1000,
-    ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+  const res = await fetch("/api/gpt", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "gpt-4o",
+      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      temperature: 0.8,
+      max_tokens: 1000,
+      ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+    }),
   });
-
-  for (const url of endpoints) {
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
-        body,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || "Erro na API OpenAI");
-      return data.choices[0].message.content;
-    } catch (e) {
-      // Se for o último endpoint, lança o erro
-      if (url === endpoints[endpoints.length - 1]) throw e;
-      // Senão tenta o próximo
-      console.warn("Endpoint falhou, tentando próximo:", url, e.message);
-    }
-  }
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erro na API OpenAI");
+  return data.choices[0].message.content;
 };
 
 const gerarCenario = async (segmento, perfis, dificuldade) => {
