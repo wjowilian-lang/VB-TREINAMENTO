@@ -1370,28 +1370,20 @@ export default function App() {
           {/* Gráfico de Evolução por Vendedor */}
           {(() => {
             const CORES_VENDEDOR = [C.amarelo, C.azul, C.verde, C.vermelho, C.laranja, "#9b59b6", "#1abc9c", "#e67e22", "#2c3e50"];
-            const vendedoresComSims = stats.filter(v => {
-              const sims = simulados.filter(r => r.vendedor === v.vendedor);
-              return sims.length >= 1;
-            });
-            if (vendedoresComSims.length === 0) return null;
 
-            // Pegar todos os simulados ordenados por timestamp, pegar os últimos 10 por vendedor
-            const dadosVendedor = vendedoresComSims.map((v, vi) => {
-              const sims = simulados.filter(r => r.vendedor === v.vendedor).sort((a, b) => a.timestamp?.localeCompare(b.timestamp));
-              return { nome: v.vendedor, cor: CORES_VENDEDOR[vi % CORES_VENDEDOR.length], sims: sims.slice(-10) };
-            });
+            // Incluir todos vendedores que têm pelo menos 1 simulado_ia
+            const dadosVendedor = vendedores.map((v, vi) => {
+              const sims = historico
+                .filter(r => r.vendedor === v && r.tipo === "simulado_ia" && r.nota)
+                .sort((a, b) => (a.timestamp || "").localeCompare(b.timestamp || ""));
+              return { nome: v, cor: CORES_VENDEDOR[vi % CORES_VENDEDOR.length], sims };
+            }).filter(v => v.sims.length > 0);
 
-            // Determinar eixo X: datas únicas de todos os simulados, ordenadas
-            const todasDatas = [...new Set(simulados.map(r => r.data))].sort((a, b) => {
-              const [da, ma, aa] = a.split("/"); const [db, mb, ab] = b.split("/");
-              return new Date(`${aa}-${ma}-${da}`) - new Date(`${ab}-${mb}-${db}`);
-            }).slice(-12);
+            if (dadosVendedor.length === 0) return null;
 
-            const CHART_W = 900, CHART_H = 200, PAD_L = 40, PAD_R = 20, PAD_T = 16, PAD_B = 40;
+            const CHART_W = 900, CHART_H = 220, PAD_L = 40, PAD_R = 20, PAD_T = 20, PAD_B = 40;
             const W = CHART_W - PAD_L - PAD_R;
             const H = CHART_H - PAD_T - PAD_B;
-            const xPos = (i) => PAD_L + (todasDatas.length <= 1 ? W / 2 : (i / (todasDatas.length - 1)) * W);
             const yPos = (nota) => PAD_T + H - ((nota / 10) * H);
 
             return (
@@ -1403,34 +1395,32 @@ export default function App() {
                     {dadosVendedor.map(v => (
                       <div key={v.nome} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <div style={{ width: 24, height: 3, background: v.cor }} />
-                        <span style={{ fontSize: 11, color: C.texto, fontFamily: MONT, fontWeight: 700 }}>{v.nome}</span>
+                        <span style={{ fontSize: 11, color: C.texto, fontFamily: MONT, fontWeight: 700 }}>{v.nome} ({v.sims.length})</span>
                       </div>
                     ))}
                   </div>
-                  {/* SVG Chart */}
+                  {/* SVG Chart — cada vendedor no seu próprio eixo sequencial */}
                   <svg width="100%" viewBox={`0 0 ${CHART_W} ${CHART_H}`} style={{ overflow: "visible" }}>
                     {/* Grid horizontal */}
                     {[0, 2, 4, 6, 8, 10].map(n => (
                       <g key={n}>
-                        <line x1={PAD_L} y1={yPos(n)} x2={CHART_W - PAD_R} y2={yPos(n)} stroke={C.borda} strokeWidth="1" />
+                        <line x1={PAD_L} y1={yPos(n)} x2={CHART_W - PAD_R} y2={yPos(n)} stroke={C.borda} strokeWidth="1" strokeDasharray={n === 0 ? "0" : "4,4"} />
                         <text x={PAD_L - 6} y={yPos(n) + 4} fontSize="9" fill={C.claro} textAnchor="end" fontFamily={MONT}>{n}</text>
                       </g>
                     ))}
-                    {/* Linhas de cada vendedor */}
+                    {/* Linha de referência nota 6 */}
+                    <line x1={PAD_L} y1={yPos(6)} x2={CHART_W - PAD_R} y2={yPos(6)} stroke={C.amareloEscuro} strokeWidth="1" strokeDasharray="2,4" opacity="0.4" />
+
                     {dadosVendedor.map(v => {
-                      // Para cada data do eixo X, pegar a nota mais recente do vendedor naquela data (ou null)
-                      const pontosRaw = todasDatas.map((data, xi) => {
-                        const sim = [...v.sims].reverse().find(s => s.data === data);
-                        return sim ? { xi, nota: sim.nota } : null;
-                      }).filter(Boolean);
+                      const n = v.sims.length;
+                      if (n === 0) return null;
 
-                      if (pontosRaw.length === 0) return null;
+                      // Distribuir pontos uniformemente no eixo X
+                      const xPos = (i) => n === 1 ? PAD_L + W / 2 : PAD_L + (i / (n - 1)) * W;
+                      const pts = v.sims.map((sim, i) => ({ x: xPos(i), y: yPos(sim.nota), nota: sim.nota, data: sim.data }));
 
-                      const pts = pontosRaw.map(p => ({ x: xPos(p.xi), y: yPos(p.nota), nota: p.nota }));
-
-                      // Path com linha suavizada
                       const pathD = pts.length === 1
-                        ? `M ${pts[0].x} ${pts[0].y}`
+                        ? null
                         : pts.map((p, i) => {
                             if (i === 0) return `M ${p.x} ${p.y}`;
                             const prev = pts[i - 1];
@@ -1440,20 +1430,23 @@ export default function App() {
 
                       return (
                         <g key={v.nome}>
-                          {pts.length > 1 && <path d={pathD} fill="none" stroke={v.cor} strokeWidth="2.5" strokeLinejoin="round" />}
+                          {pathD && <path d={pathD} fill="none" stroke={v.cor} strokeWidth="2.5" />}
                           {pts.map((p, i) => (
                             <g key={i}>
                               <circle cx={p.x} cy={p.y} r="5" fill={v.cor} stroke={C.branco} strokeWidth="2" />
-                              <text x={p.x} y={p.y - 9} fontSize="9" fill={v.cor} textAnchor="middle" fontWeight="700" fontFamily={MONT}>{p.nota.toFixed(1)}</text>
+                              <text x={p.x} y={p.y - 10} fontSize="9" fill={v.cor} textAnchor="middle" fontWeight="700" fontFamily={MONT}>{p.nota.toFixed ? p.nota.toFixed(1) : p.nota}</text>
                             </g>
                           ))}
                         </g>
                       );
                     })}
-                    {/* Eixo X — datas */}
-                    {todasDatas.map((data, i) => (
-                      <text key={data} x={xPos(i)} y={CHART_H - 6} fontSize="9" fill={C.claro} textAnchor="middle" fontFamily={MONT}>{data}</text>
-                    ))}
+
+                    {/* Eixo X — datas do primeiro vendedor como referência */}
+                    {dadosVendedor[0]?.sims.map((sim, i) => {
+                      const n = dadosVendedor[0].sims.length;
+                      const x = n === 1 ? PAD_L + W / 2 : PAD_L + (i / (n - 1)) * W;
+                      return <text key={i} x={x} y={CHART_H - 6} fontSize="9" fill={C.claro} textAnchor="middle" fontFamily={MONT}>{sim.data}</text>;
+                    })}
                   </svg>
                 </div>
               </div>
