@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, updateDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 
 // ─── CONFIGURAÇÃO ────────────────────────────────────────────────
 const firebaseConfig = {
@@ -224,24 +224,14 @@ const salvarSimulacao = async (dados) => {
 const buscarSimulacoes = async (vendedor) => {
   try {
     const q = vendedor
-      ? query(collection(db, "simulacoes_v2"), where("vendedor", "==", vendedor), orderBy("timestamp", "desc"))
-      : query(collection(db, "simulacoes_v2"), orderBy("timestamp", "desc"));
+      ? query(collection(db, "simulacoes_v2"), where("vendedor", "==", vendedor))
+      : query(collection(db, "simulacoes_v2"));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return docs.sort((a, b) => (b.timestamp || "").localeCompare(a.timestamp || ""));
   } catch (e) {
     console.error("Firebase buscarSimulacoes erro:", e);
-    // Fallback: tentar sem orderBy se falhar (índice não criado)
-    try {
-      const q2 = vendedor
-        ? query(collection(db, "simulacoes_v2"), where("vendedor", "==", vendedor))
-        : query(collection(db, "simulacoes_v2"));
-      const snap2 = await getDocs(q2);
-      const docs = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
-      return docs.sort((a, b) => (b.timestamp || "").localeCompare(a.timestamp || ""));
-    } catch (e2) {
-      console.error("Firebase fallback erro:", e2);
-      return [];
-    }
+    return [];
   }
 };
 
