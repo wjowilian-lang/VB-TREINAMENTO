@@ -367,14 +367,14 @@ Retorne APENAS um JSON válido:
 const s = {
   page: { minHeight: "100vh", background: C.branco, fontFamily: OPEN, color: C.texto },
   topbar: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px", borderBottom: `1px solid ${C.borda}`, background: C.branco, position: "sticky", top: 0, zIndex: 100 },
-  btnAmarelo: { background: C.amarelo, border: "none", borderRadius: 10, padding: "11px 22px", color: C.preto, fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: MONT },
-  btnAmareloFull: { width: "100%", background: C.amarelo, border: "none", borderRadius: 10, padding: "13px 0", color: C.preto, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: MONT },
-  btnGhost: { background: "none", border: `1px solid ${C.borda}`, borderRadius: 8, padding: "7px 14px", color: C.suave, cursor: "pointer", fontSize: 12, fontFamily: OPEN },
-  btnGestor: { background: "none", border: `1px solid ${C.amarelo}66`, borderRadius: 8, padding: "7px 14px", color: C.amareloEscuro, cursor: "pointer", fontSize: 12, fontFamily: MONT, fontWeight: 600 },
-  input: { width: "100%", background: C.fundo, border: `1.5px solid ${C.borda}`, borderRadius: 10, padding: "13px 16px", color: C.texto, fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: OPEN },
-  card: { background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "22px 18px", cursor: "pointer", position: "relative", overflow: "hidden", transition: "all 0.2s" },
-  textarea: { width: "100%", background: C.fundo, border: `1.5px solid ${C.borda}`, borderRadius: 10, padding: "13px 16px", color: C.texto, fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: OPEN, resize: "none", lineHeight: 1.6 },
-  tag: (cor) => ({ display: "inline-block", fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 20, background: cor + "18", color: cor, border: `1px solid ${cor}33`, fontFamily: MONT, letterSpacing: 1 }),
+  btnAmarelo: { background: C.amarelo, border: "none", borderRadius: 0, padding: "11px 22px", color: C.preto, fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: MONT },
+  btnAmareloFull: { width: "100%", background: C.amarelo, border: "none", borderRadius: 0, padding: "13px 0", color: C.preto, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: MONT },
+  btnGhost: { background: "none", border: `1px solid ${C.borda}`, borderRadius: 0, padding: "7px 14px", color: C.suave, cursor: "pointer", fontSize: 12, fontFamily: OPEN },
+  btnGestor: { background: "none", border: `1px solid ${C.amarelo}66`, borderRadius: 0, padding: "7px 14px", color: C.amareloEscuro, cursor: "pointer", fontSize: 12, fontFamily: MONT, fontWeight: 600 },
+  input: { width: "100%", background: C.fundo, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "13px 16px", color: C.texto, fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: OPEN },
+  card: { background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "22px 18px", cursor: "pointer", position: "relative", overflow: "hidden", transition: "all 0.2s" },
+  textarea: { width: "100%", background: C.fundo, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "13px 16px", color: C.texto, fontSize: 14, outline: "none", boxSizing: "border-box", fontFamily: OPEN, resize: "none", lineHeight: 1.6 },
+  tag: (cor) => ({ display: "inline-block", fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 0, background: cor + "18", color: cor, border: `1px solid ${cor}33`, fontFamily: MONT, letterSpacing: 1 }),
 };
 
 // ─── COMPONENTES BASE ─────────────────────────────────────────────
@@ -470,7 +470,7 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
         <div style={{ fontSize: 11, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>DIFICULDADE</div>
         <div style={{ display: "flex", gap: 10 }}>
           {[{ id: "basica", label: "Básica", desc: "Conceitos essenciais para qualquer vendedor" }, { id: "intermediaria", label: "Intermediária", desc: "Para responder clientes técnicos" }].map(d => (
-            <div key={d.id} onClick={() => setDificuldade(d.id)} style={{ flex: 1, padding: "14px 16px", borderRadius: 10, border: `1.5px solid ${dificuldade === d.id ? C.amarelo : C.borda}`, background: dificuldade === d.id ? "#FFF8E1" : C.branco, cursor: "pointer" }}>
+            <div key={d.id} onClick={() => setDificuldade(d.id)} style={{ flex: 1, padding: "14px 16px", borderRadius: 0, border: `1.5px solid ${dificuldade === d.id ? C.amarelo : C.borda}`, background: dificuldade === d.id ? "#FFF8E1" : C.branco, cursor: "pointer" }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: C.texto, fontFamily: MONT, marginBottom: 4 }}>{d.label}</div>
               <div style={{ fontSize: 11, color: C.suave }}>{d.desc}</div>
             </div>
@@ -490,10 +490,10 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
           <div style={{ fontSize: 11, color: C.claro, letterSpacing: 1, fontFamily: MONT, fontWeight: 700 }}>{q.topico}</div>
           <div style={{ fontSize: 11, color: C.claro }}>{idx + 1} / {questoes.length}</div>
         </div>
-        <div style={{ height: 4, background: C.borda, borderRadius: 2, marginBottom: 28, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${(idx / questoes.length) * 100}%`, background: C.amarelo, borderRadius: 2, transition: "width 0.4s" }} />
+        <div style={{ height: 4, background: C.borda, borderRadius: 0, marginBottom: 28, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${(idx / questoes.length) * 100}%`, background: C.amarelo, borderRadius: 0, transition: "width 0.4s" }} />
         </div>
-        <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "22px 24px", marginBottom: 22 }}>
+        <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "22px 24px", marginBottom: 22 }}>
           <div style={{ fontSize: 15, color: C.texto, lineHeight: 1.6, fontWeight: 600 }}>{q.enunciado}</div>
         </div>
         <div style={{ marginBottom: 8, fontSize: 10, color: C.claro, letterSpacing: 2, fontFamily: MONT, fontWeight: 700 }}>SELECIONE A MELHOR RESPOSTA:</div>
@@ -504,7 +504,7 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
             else if (op.correta) { bg = "#EAFAF1"; border = "#1a8c4e44"; cor = C.verde; }
           }
           return (
-            <div key={i} onClick={() => responder(op)} style={{ background: bg, border: `1.5px solid ${border}`, borderRadius: 12, padding: "14px 18px", marginBottom: 10, cursor: selecionada ? "default" : "pointer", color: cor, fontSize: 13, lineHeight: 1.6, transition: "all 0.2s" }}>
+            <div key={i} onClick={() => responder(op)} style={{ background: bg, border: `1.5px solid ${border}`, borderRadius: 0, padding: "14px 18px", marginBottom: 10, cursor: selecionada ? "default" : "pointer", color: cor, fontSize: 13, lineHeight: 1.6, transition: "all 0.2s" }}>
               <span style={{ fontWeight: 700, marginRight: 8, fontFamily: MONT }}>{String.fromCharCode(65 + i)}.</span>{op.texto}
               {selecionada !== null && (
                 <div style={{ marginTop: 8, fontSize: 12, color: op.correta ? C.verde : (op === selecionada ? C.vermelho : C.claro), lineHeight: 1.5 }}>{op.explicacao}</div>
@@ -525,7 +525,7 @@ const Quiz = ({ vendedor, onVoltar, onConcluir }) => {
           <div style={{ fontSize: 72, fontWeight: 900, color: cor, fontFamily: MONT, lineHeight: 1 }}>{nota}</div>
           <div style={{ fontSize: 13, color: C.suave }}>{emojiNota(nota)} {nota >= 8 ? "Excelente domínio técnico!" : nota >= 6 ? "Bom! Continue praticando." : "Precisa revisar os conceitos."}</div>
         </div>
-        <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 24 }}>
+        <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, overflow: "hidden", marginBottom: 24 }}>
           {detalhes.map((d, i) => (
             <div key={i} style={{ padding: "16px 20px", borderBottom: i < detalhes.length - 1 ? `1px solid ${C.borda}` : "none" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
@@ -691,7 +691,7 @@ REGRAS ABSOLUTAS:
         <div style={{ fontSize: 11, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>DIFICULDADE</div>
         <div style={{ display: "flex", gap: 10 }}>
           {DIFICULDADES_SIM.map(d => (
-            <div key={d.id} onClick={() => setDificuldade(d.id)} style={{ flex: 1, padding: "14px 16px", borderRadius: 10, border: `1.5px solid ${dificuldade === d.id ? d.cor : C.borda}`, background: dificuldade === d.id ? d.cor + "12" : C.branco, cursor: "pointer" }}>
+            <div key={d.id} onClick={() => setDificuldade(d.id)} style={{ flex: 1, padding: "14px 16px", borderRadius: 0, border: `1.5px solid ${dificuldade === d.id ? d.cor : C.borda}`, background: dificuldade === d.id ? d.cor + "12" : C.branco, cursor: "pointer" }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: dificuldade === d.id ? d.cor : C.texto, fontFamily: MONT, marginBottom: 4 }}>{d.label}</div>
               <div style={{ fontSize: 11, color: C.suave }}>{d.desc}</div>
             </div>
@@ -723,7 +723,7 @@ REGRAS ABSOLUTAS:
   if (fase === "chat" && cenario) return (
     <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px", display: "flex", flexDirection: "column", height: "calc(100vh - 70px)" }}>
       {/* Cabeçalho do chat */}
-      <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "14px 18px", marginBottom: 14, flexShrink: 0 }}>
+      <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "14px 18px", marginBottom: 14, flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <div style={{ fontWeight: 800, color: C.texto, fontFamily: MONT, fontSize: 14 }}>{cenario.cliente.nome} · {cenario.cliente.cargo}</div>
@@ -736,7 +736,7 @@ REGRAS ABSOLUTAS:
             })}
           </div>
         </div>
-        <div style={{ marginTop: 10, padding: "8px 12px", background: "#FFF8E1", borderRadius: 8, fontSize: 11, color: C.amareloEscuro }}>
+        <div style={{ marginTop: 10, padding: "8px 12px", background: "#FFF8E1", borderRadius: 0, fontSize: 11, color: C.amareloEscuro }}>
           <strong>Situação atual:</strong> {cenario.empresa.situacao_atual}
         </div>
       </div>
@@ -745,7 +745,7 @@ REGRAS ABSOLUTAS:
       <div ref={chatRef} style={{ flex: 1, overflowY: "auto", marginBottom: 14, display: "flex", flexDirection: "column", gap: 10 }}>
         {mensagens.map((m, i) => (
           <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.role === "vendedor" ? "flex-end" : "flex-start" }}>
-            <div style={{ maxWidth: "78%", padding: "10px 14px", borderRadius: m.role === "vendedor" ? "14px 14px 4px 14px" : "14px 14px 14px 4px", background: m.role === "vendedor" ? C.amarelo : C.fundo, color: m.role === "vendedor" ? C.preto : C.texto, fontSize: 13, lineHeight: 1.6 }}>
+            <div style={{ maxWidth: "78%", padding: "10px 14px", borderRadius: 0, background: m.role === "vendedor" ? C.amarelo : C.fundo, color: m.role === "vendedor" ? C.preto : C.texto, fontSize: 13, lineHeight: 1.6 }}>
               {m.content}
             </div>
             {m.ts && <div style={{ fontSize: 10, color: C.claro, marginTop: 3, marginLeft: m.role === "vendedor" ? 0 : 4, marginRight: m.role === "vendedor" ? 4 : 0 }}>{m.role === "vendedor" ? "Você" : cenario.cliente.nome.split(" ")[0]} · {m.ts}</div>}
@@ -753,7 +753,7 @@ REGRAS ABSOLUTAS:
         ))}
         {loading && (
           <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
-            <div style={{ padding: "10px 14px", borderRadius: "14px 14px 14px 4px", background: C.fundo, fontSize: 13 }}>
+            <div style={{ padding: "10px 14px", borderRadius: 0, background: C.fundo, fontSize: 13 }}>
               <span style={{ animation: "pulse 1s infinite" }}>●</span> <span style={{ color: C.claro, fontSize: 12 }}>digitando...</span>
               <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
             </div>
@@ -792,7 +792,7 @@ REGRAS ABSOLUTAS:
     return (
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px" }}>
         {/* Nota geral */}
-        <div style={{ textAlign: "center", marginBottom: 32, padding: "32px 20px", background: cor + "10", border: `1.5px solid ${cor}33`, borderRadius: 16 }}>
+        <div style={{ textAlign: "center", marginBottom: 32, padding: "32px 20px", background: cor + "10", border: `1.5px solid ${cor}33`, borderRadius: 0 }}>
           <div style={{ fontSize: 80, fontWeight: 900, color: cor, lineHeight: 1, fontFamily: MONT }}>{avaliacao.nota.toFixed(1)}</div>
           <div style={{ fontSize: 14, color: cor, fontWeight: 700, fontFamily: MONT, marginTop: 4 }}>{emojiNota(avaliacao.nota)} {avaliacao.nota >= 8 ? "Excelente performance!" : avaliacao.nota >= 6 ? "Bom trabalho!" : "Continue praticando!"}</div>
           <div style={{ fontSize: 12, color: C.suave, marginTop: 8 }}>
@@ -801,13 +801,13 @@ REGRAS ABSOLUTAS:
         </div>
 
         {/* Critérios */}
-        <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 20 }}>
+        <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, overflow: "hidden", marginBottom: 20 }}>
           <div style={{ padding: "14px 20px", borderBottom: `1px solid ${C.borda}`, fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT }}>AVALIAÇÃO POR CRITÉRIO</div>
           {Object.entries(avaliacao.criterios).map(([key, val]) => (
             <div key={key} style={{ padding: "12px 20px", borderBottom: `1px solid ${C.borda}`, display: "flex", alignItems: "center", gap: 14 }}>
               <div style={{ flex: 1, fontSize: 13, color: C.texto }}>{criterioLabels[key]}</div>
-              <div style={{ width: 160, height: 6, background: C.fundo, borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${val * 10}%`, background: corNota(val), borderRadius: 3, transition: "width 0.8s" }} />
+              <div style={{ width: 160, height: 6, background: C.fundo, borderRadius: 0, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${val * 10}%`, background: corNota(val), borderRadius: 0, transition: "width 0.8s" }} />
               </div>
               <div style={{ fontSize: 14, fontWeight: 800, color: corNota(val), fontFamily: MONT, width: 28, textAlign: "right" }}>{val}</div>
             </div>
@@ -816,18 +816,18 @@ REGRAS ABSOLUTAS:
 
         {/* Pontos fortes e melhorias */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
-          <div style={{ background: "#EAFAF1", border: "1px solid #1a8c4e22", borderRadius: 12, padding: "16px 18px" }}>
+          <div style={{ background: "#EAFAF1", border: "1px solid #1a8c4e22", borderRadius: 0, padding: "16px 18px" }}>
             <div style={{ fontSize: 11, color: C.verde, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 10 }}>✅ PONTOS FORTES</div>
             {avaliacao.fortes.map((f, i) => <div key={i} style={{ fontSize: 12, color: C.texto, marginBottom: 6, lineHeight: 1.5 }}>· {f}</div>)}
           </div>
-          <div style={{ background: "#FEECEC", border: "1px solid #c0392b22", borderRadius: 12, padding: "16px 18px" }}>
+          <div style={{ background: "#FEECEC", border: "1px solid #c0392b22", borderRadius: 0, padding: "16px 18px" }}>
             <div style={{ fontSize: 11, color: C.vermelho, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 10 }}>📈 MELHORIAS</div>
             {avaliacao.melhorias.map((m, i) => <div key={i} style={{ fontSize: 12, color: C.texto, marginBottom: 6, lineHeight: 1.5 }}>· {m}</div>)}
           </div>
         </div>
 
         {/* Feedback geral */}
-        <div style={{ background: "#FFF8E1", border: `1px solid ${C.amarelo}44`, borderRadius: 12, padding: "18px 20px", marginBottom: 24 }}>
+        <div style={{ background: "#FFF8E1", border: `1px solid ${C.amarelo}44`, borderRadius: 0, padding: "18px 20px", marginBottom: 24 }}>
           <div style={{ fontSize: 11, color: C.amareloEscuro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 8 }}>ANÁLISE GERAL</div>
           <div style={{ fontSize: 13, color: C.texto, lineHeight: 1.7 }}>{avaliacao.feedback}</div>
         </div>
@@ -844,8 +844,9 @@ REGRAS ABSOLUTAS:
 
 // ─── APP PRINCIPAL ────────────────────────────────────────────────
 export default function App() {
-  const [tela, setTela] = useState("login");
-  const [usuario, setUsuario] = useState(null); // { nome, senha, role }
+  const usuarioSalvo = (() => { try { return JSON.parse(localStorage.getItem("vb_sessao") || "null"); } catch { return null; } })();
+  const [tela, setTela] = useState(usuarioSalvo ? "home" : "login");
+  const [usuario, setUsuario] = useState(usuarioSalvo); // { nome, senha, role }
   const [nomeInput, setNomeInput] = useState("");
   const [senhaInput, setSenhaInput] = useState("");
   const [erroLogin, setErroLogin] = useState("");
@@ -864,12 +865,13 @@ export default function App() {
     setErroLogin("");
     const u = autenticar(nomeInput, senhaInput);
     if (!u) { setErroLogin("Nome ou senha incorretos."); return; }
+    localStorage.setItem("vb_sessao", JSON.stringify(u));
     setUsuario(u);
     setTela("home");
     if (u.role === "admin") carregarTodos();
   };
 
-  const sair = () => { setUsuario(null); setNomeInput(""); setSenhaInput(""); setTela("login"); };
+  const sair = () => { localStorage.removeItem("vb_sessao"); setUsuario(null); setNomeInput(""); setSenhaInput(""); setTela("login"); };
 
   const trocarSenha = () => {
     setErroSenha(""); setOkSenha("");
@@ -880,12 +882,20 @@ export default function App() {
     saveUsuarios(lista);
     const atualizado = { ...usuario, senha: senhaNova };
     setUsuario(atualizado);
+    localStorage.setItem("vb_sessao", JSON.stringify(atualizado));
     setOkSenha("Senha alterada com sucesso!");
     setSenhaAtual(""); setSenhaNova(""); setSenhaConfirm("");
   };
 
   const carregarTodos = async () => { setLoading(true); setHistorico(await buscarSimulacoes(null)); setLoading(false); };
   const verMeus = async () => { setLoading(true); setHistorico(await buscarSimulacoes(usuario.nome)); setLoading(false); setTela("historico"); };
+
+  // Restaurar dados ao carregar com sessão salva
+  useEffect(() => {
+    if (usuarioSalvo) {
+      if (usuarioSalvo.role === "admin") { carregarTodos(); }
+    }
+  }, []);
 
   const Nav = () => (
     <Topbar
@@ -901,7 +911,7 @@ export default function App() {
   // ── MODAL TROCA DE SENHA ──
   const ModalSenha = () => !modalSenha ? null : (
     <div style={{ position: "fixed", inset: 0, background: "#0008", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: C.branco, borderRadius: 16, padding: "32px 28px", width: "100%", maxWidth: 380, boxShadow: "0 20px 60px #0003" }}>
+      <div style={{ background: C.branco, borderRadius: 0, padding: "32px 28px", width: "100%", maxWidth: 380, boxShadow: "0 20px 60px #0003" }}>
         <div style={{ fontSize: 16, fontWeight: 800, color: C.texto, fontFamily: MONT, marginBottom: 6 }}>Alterar senha</div>
         <div style={{ fontSize: 12, color: C.suave, marginBottom: 24 }}>Usuário: <strong>{usuario?.nome}</strong></div>
         {["senhaAtual", "senhaNova", "senhaConfirm"].map((campo, i) => (
@@ -917,8 +927,8 @@ export default function App() {
             />
           </div>
         ))}
-        {erroSenha && <div style={{ fontSize: 12, color: C.vermelho, marginBottom: 10, padding: "8px 12px", background: "#FEECEC", borderRadius: 8 }}>{erroSenha}</div>}
-        {okSenha && <div style={{ fontSize: 12, color: C.verde, marginBottom: 10, padding: "8px 12px", background: "#EAFAF1", borderRadius: 8 }}>{okSenha}</div>}
+        {erroSenha && <div style={{ fontSize: 12, color: C.vermelho, marginBottom: 10, padding: "8px 12px", background: "#FEECEC", borderRadius: 0 }}>{erroSenha}</div>}
+        {okSenha && <div style={{ fontSize: 12, color: C.verde, marginBottom: 10, padding: "8px 12px", background: "#EAFAF1", borderRadius: 0 }}>{okSenha}</div>}
         <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
           <button style={s.btnAmarelo} onClick={trocarSenha}>Salvar senha</button>
           <button style={s.btnGhost} onClick={() => setModalSenha(false)}>Cancelar</button>
@@ -941,7 +951,7 @@ export default function App() {
         <input style={{ ...s.input, marginBottom: 12 }} placeholder="Seu nome" value={nomeInput} onChange={e => setNomeInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrar()} autoFocus />
         <div style={{ fontSize: 11, color: C.claro, marginBottom: 8, letterSpacing: 1, fontFamily: MONT, fontWeight: 700 }}>SENHA</div>
         <input style={{ ...s.input, marginBottom: 6 }} placeholder="Sua senha" type="password" value={senhaInput} onChange={e => setSenhaInput(e.target.value)} onKeyDown={e => e.key === "Enter" && entrar()} />
-        {erroLogin && <div style={{ fontSize: 12, color: C.vermelho, marginBottom: 10, padding: "8px 12px", background: "#FEECEC", borderRadius: 8 }}>{erroLogin}</div>}
+        {erroLogin && <div style={{ fontSize: 12, color: C.vermelho, marginBottom: 10, padding: "8px 12px", background: "#FEECEC", borderRadius: 0 }}>{erroLogin}</div>}
         <button style={{ ...s.btnAmareloFull, marginTop: 12 }} onClick={entrar}>Entrar →</button>
       </div>
     </div>
@@ -955,14 +965,14 @@ export default function App() {
       <Nav />
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "52px 24px" }}>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
-          <div style={{ display: "inline-block", background: "#FFF8E1", border: `1px solid ${C.amarelo}66`, color: C.amareloEscuro, fontSize: 10, fontWeight: 700, padding: "4px 14px", borderRadius: 20, marginBottom: 18, letterSpacing: 2, fontFamily: MONT }}>PLATAFORMA DE TREINAMENTO · IA</div>
+          <div style={{ display: "inline-block", background: "#FFF8E1", border: `1px solid ${C.amarelo}66`, color: C.amareloEscuro, fontSize: 10, fontWeight: 700, padding: "4px 14px", borderRadius: 0, marginBottom: 18, letterSpacing: 2, fontFamily: MONT }}>PLATAFORMA DE TREINAMENTO · IA</div>
           <h1 style={{ fontSize: 28, fontWeight: 900, color: C.texto, margin: "0 0 12px", lineHeight: 1.25, fontFamily: MONT }}>Treine com inteligência artificial<br /><span style={{ color: C.amareloEscuro }}>antes de atender de verdade</span></h1>
           <p style={{ fontSize: 13, color: C.suave, lineHeight: 1.8 }}>Dois módulos: quiz técnico VoIP para dominar os conceitos, e simulado com cliente IA para praticar vendas reais.</p>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           {/* Treino Técnico */}
-          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 16, padding: "32px 28px", cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "32px 28px", cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = C.amarelo; e.currentTarget.style.boxShadow = `0 6px 24px ${C.amarelo}22`; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = C.borda; e.currentTarget.style.boxShadow = "none"; }}
             onClick={() => setTela("quiz")}>
@@ -980,7 +990,7 @@ export default function App() {
           </div>
 
           {/* Simulado IA */}
-          <div style={{ background: C.branco, border: `1.5px solid ${C.amarelo}`, borderRadius: 16, padding: "32px 28px", cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
+          <div style={{ background: C.branco, border: `1.5px solid ${C.amarelo}`, borderRadius: 0, padding: "32px 28px", cursor: "pointer", transition: "all 0.2s", position: "relative", overflow: "hidden" }}
             onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 6px 24px ${C.amarelo}33`; }}
             onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; }}
             onClick={() => setTela("simulado")}>
@@ -1021,51 +1031,207 @@ export default function App() {
     </div>
   );
 
-  // ── HISTÓRICO ──
+  // ── HISTÓRICO (relatório completo do próprio vendedor) ──
   if (tela === "historico") {
-    const simulados = historico.filter(r => r.tipo === "simulado_ia" && r.nota);
-    const quizzes = historico.filter(r => r.tipo === "quiz" && r.nota);
-    const mediaSimulados = simulados.length > 0 ? (simulados.reduce((a, b) => a + b.nota, 0) / simulados.length).toFixed(1) : "—";
-    const mediaQuiz = quizzes.length > 0 ? (quizzes.reduce((a, b) => a + b.nota, 0) / quizzes.length).toFixed(1) : "—";
+    const nomeV = usuario?.nome || "";
+    const simsV = historico.filter(r => r.tipo === "simulado_ia" && r.nota);
+    const qzsV = historico.filter(r => r.tipo === "quiz" && r.nota);
+    const criteriosNomesCompletos = { qualificacao: "Qualificação", necessidades: "Descoberta de Necessidades", tecnica: "Conhecimento Técnico", objecoes: "Tratamento de Objeções", fechamento: "Fechamento", comunicacao: "Comunicação" };
+    const mediaSim = simsV.length > 0 ? simsV.reduce((a, b) => a + b.nota, 0) / simsV.length : 0;
+    const mediaQz = qzsV.length > 0 ? qzsV.reduce((a, b) => a + b.nota, 0) / qzsV.length : 0;
+    const mediaCriterios = {};
+    Object.keys(criteriosNomesCompletos).forEach(k => {
+      const vals = simsV.filter(s => s.avaliacao?.criterios?.[k]).map(s => s.avaliacao.criterios[k]);
+      mediaCriterios[k] = vals.length > 0 ? parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)) : null;
+    });
+    const dataHoje = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
     return (
       <div style={{ ...s.page, background: C.fundo }}>
         <style>{FONTS}</style>
         <ModalSenha />
         <Nav />
-        <div style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 28 }}>
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "20px", textAlign: "center" }}>
-              <div style={{ fontSize: 32, fontWeight: 900, color: corNota(parseFloat(mediaSimulados) || 0), fontFamily: MONT }}>{mediaSimulados}</div>
-              <div style={{ fontSize: 11, color: C.claro, letterSpacing: 1, fontFamily: MONT }}>MÉDIA SIMULADOS IA</div>
-              <div style={{ fontSize: 12, color: C.suave, marginTop: 4 }}>{simulados.length} simulações</div>
-            </div>
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "20px", textAlign: "center" }}>
-              <div style={{ fontSize: 32, fontWeight: 900, color: corNota(parseFloat(mediaQuiz) || 0), fontFamily: MONT }}>{mediaQuiz}</div>
-              <div style={{ fontSize: 11, color: C.claro, letterSpacing: 1, fontFamily: MONT }}>MÉDIA TREINO TÉCNICO</div>
-              <div style={{ fontSize: 12, color: C.suave, marginTop: 4 }}>{quizzes.length} quizzes</div>
+        <div style={{ maxWidth: 820, margin: "0 auto", padding: "36px 24px" }}>
+
+          {/* Cabeçalho */}
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, padding: "26px 30px", marginBottom: 18 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontFamily: MONT, fontWeight: 700, marginBottom: 6 }}>MEU RELATÓRIO DE DESEMPENHO</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: C.texto, fontFamily: MONT }}>{nomeV}</div>
+                <div style={{ fontSize: 13, color: C.suave, marginTop: 4 }}>Gerado em {dataHoje} · {simsV.length} simulados · {qzsV.length} treinos técnicos</div>
+              </div>
+              <img src={LOGO_URL} alt="VB" style={{ height: 44, objectFit: "contain" }} onError={e => { e.target.style.display = "none"; }} />
             </div>
           </div>
-          {loading && <div style={{ textAlign: "center", color: C.suave, padding: 40 }}>Carregando...</div>}
-          {historico.map((r, i) => (
-            <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "16px 20px", marginBottom: 10 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
-                    <span style={s.tag(r.tipo === "simulado_ia" ? C.amareloEscuro : C.azul)}>
-                      {r.tipo === "simulado_ia" ? "SIMULADO IA" : "QUIZ TÉCNICO"}
-                    </span>
-                    {r.dificuldade && <span style={s.tag(C.suave)}>{r.dificuldade.toUpperCase()}</span>}
-                  </div>
-                  <div style={{ fontWeight: 700, color: C.texto, fontSize: 13, fontFamily: MONT }}>
-                    {r.tipo === "simulado_ia" ? `${r.cenario?.empresa?.nome || ""} · ${r.cenario?.cliente?.nome || ""}` : `Quiz · ${r.topico}`}
-                  </div>
-                  <div style={{ fontSize: 11, color: C.claro, marginTop: 2 }}>{r.data}</div>
-                </div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: r.nota ? corNota(r.nota) : C.claro, fontFamily: MONT }}>{r.nota ? r.nota.toFixed ? r.nota.toFixed(1) : r.nota : "—"}</div>
+
+          {/* Cards resumo */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 18 }}>
+            {[
+              { label: "MÉDIA SIMULADOS IA", value: mediaSim > 0 ? mediaSim.toFixed(1) : "—", sub: emojiNota(mediaSim) + " " + (mediaSim >= 8 ? "Excelente" : mediaSim >= 6 ? "Bom" : mediaSim > 0 ? "Continue praticando" : "Sem dados"), cor: corNota(mediaSim) },
+              { label: "MÉDIA TREINO TÉCNICO", value: mediaQz > 0 ? mediaQz.toFixed(1) : "—", sub: `${qzsV.length} quizzes realizados`, cor: corNota(mediaQz) },
+              { label: "TOTAL DE ATIVIDADES", value: simsV.length + qzsV.length, sub: `${simsV.length} simulados + ${qzsV.length} treinos`, cor: C.azul },
+            ].map((m, i) => (
+              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, padding: "18px 20px", textAlign: "center" }}>
+                <div style={{ fontSize: 34, fontWeight: 900, color: m.cor, fontFamily: MONT }}>{m.value}</div>
+                <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 4, fontFamily: MONT, fontWeight: 700 }}>{m.label}</div>
+                <div style={{ fontSize: 11, color: C.suave, marginTop: 4 }}>{m.sub}</div>
               </div>
+            ))}
+          </div>
+
+          {/* Critérios médios */}
+          {Object.values(mediaCriterios).some(v => v !== null) && (
+            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, overflow: "hidden", marginBottom: 18 }}>
+              <div style={{ padding: "13px 20px", borderBottom: `1px solid ${C.borda}`, fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT }}>AVALIAÇÃO POR CRITÉRIO — MÉDIA DO PERÍODO</div>
+              {Object.entries(criteriosNomesCompletos).map(([k, label]) => {
+                const val = mediaCriterios[k];
+                if (!val) return null;
+                return (
+                  <div key={k} style={{ padding: "13px 20px", borderBottom: `1px solid ${C.borda}`, display: "flex", alignItems: "center", gap: 14 }}>
+                    <div style={{ flex: 1, fontSize: 13, color: C.texto }}>{label}</div>
+                    <div style={{ width: 180, height: 7, background: C.fundo, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${val * 10}%`, background: corNota(val) }} />
+                    </div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: corNota(val), fontFamily: MONT, width: 28, textAlign: "right" }}>{val}</div>
+                    <div style={{ fontSize: 11, color: C.suave, width: 76 }}>{val >= 8 ? "✅ Forte" : val >= 6 ? "⚠️ Regular" : "🔴 Fraco"}</div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-          <button style={{ ...s.btnAmareloFull, marginTop: 16 }} onClick={() => setTela("home")}>← Voltar</button>
+          )}
+
+          {/* Evolução */}
+          {simsV.length > 1 && (
+            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, padding: "18px 20px", marginBottom: 18 }}>
+              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 14 }}>MINHA EVOLUÇÃO — DO MAIS ANTIGO AO MAIS RECENTE</div>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 80 }}>
+                {[...simsV].reverse().map((sim, i) => (
+                  <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: corNota(sim.nota), fontFamily: MONT }}>{sim.nota.toFixed(1)}</div>
+                    <div style={{ width: "100%", height: Math.max(10, (sim.nota / 10) * 70), background: corNota(sim.nota), opacity: 0.85 }} />
+                    <div style={{ fontSize: 9, color: C.claro, textAlign: "center" }}>{sim.data}</div>
+                  </div>
+                ))}
+              </div>
+              {(() => { const delta = simsV[0]?.nota - simsV[simsV.length - 1]?.nota; return <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: delta >= 0 ? C.verde : C.vermelho }}>{delta >= 0 ? `↑ Evolução de +${delta.toFixed(1)} pontos no período` : `↓ Queda de ${Math.abs(delta).toFixed(1)} pontos no período`}</div>; })()}
+            </div>
+          )}
+
+          {/* Análise de cada simulado */}
+          {simsV.length > 0 && (
+            <>
+              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 12 }}>ANÁLISE DETALHADA DAS MINHAS CONVERSAS</div>
+              {simsV.map((sim, i) => (
+                <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, padding: "20px 22px", marginBottom: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 14, color: C.texto, fontFamily: MONT }}>{sim.cenario?.empresa?.nome} · {sim.cenario?.cliente?.nome}</div>
+                      <div style={{ fontSize: 12, color: C.suave, marginTop: 2 }}>{sim.cenario?.cliente?.cargo} · {sim.data}</div>
+                      <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                        <span style={s.tag(C.suave)}>{sim.dificuldade?.toUpperCase()}</span>
+                        {sim.avaliacao?.encerramento && <span style={s.tag(sim.avaliacao.encerramento === "venda_fechada" ? C.verde : sim.avaliacao.encerramento === "recusa" ? C.vermelho : C.azul)}>{sim.avaliacao.encerramento.replace("_", " ").toUpperCase()}</span>}
+                        <span style={s.tag(C.suave)}>{sim.mensagens?.filter(m => m.role === "vendedor").length || 0} MSG</span>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 32, fontWeight: 900, color: corNota(sim.nota), fontFamily: MONT }}>{sim.nota.toFixed(1)}</div>
+                      <div style={{ fontSize: 10, color: C.claro }}>nota final</div>
+                    </div>
+                  </div>
+                  {sim.avaliacao?.criterios && (
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+                      {Object.entries(sim.avaliacao.criterios).map(([k, val]) => (
+                        <div key={k} style={{ fontSize: 11, padding: "3px 10px", background: corNota(val) + "18", color: corNota(val), fontFamily: MONT, fontWeight: 700 }}>
+                          {criteriosNomesCompletos[k]?.split(" ")[0]} {val}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+                    <div style={{ background: "#EAFAF1", border: "1px solid #1a8c4e22", padding: "12px 14px" }}>
+                      <div style={{ fontSize: 10, color: C.verde, fontWeight: 700, fontFamily: MONT, marginBottom: 6 }}>✅ PONTOS FORTES</div>
+                      {(sim.avaliacao?.fortes || []).map((f, j) => <div key={j} style={{ fontSize: 12, color: C.texto, marginBottom: 4, lineHeight: 1.5 }}>· {f}</div>)}
+                    </div>
+                    <div style={{ background: "#FEECEC", border: "1px solid #c0392b22", padding: "12px 14px" }}>
+                      <div style={{ fontSize: 10, color: C.vermelho, fontWeight: 700, fontFamily: MONT, marginBottom: 6 }}>📈 O QUE MELHORAR</div>
+                      {(sim.avaliacao?.melhorias || []).map((m, j) => <div key={j} style={{ fontSize: 12, color: C.texto, marginBottom: 4, lineHeight: 1.5 }}>· {m}</div>)}
+                    </div>
+                  </div>
+                  {sim.avaliacao?.feedback && (
+                    <div style={{ borderLeft: `3px solid ${C.amarelo}`, paddingLeft: 12, marginBottom: 12 }}>
+                      <div style={{ fontSize: 10, color: C.amareloEscuro, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>ANÁLISE DA CONVERSA</div>
+                      <div style={{ fontSize: 12, color: C.texto, lineHeight: 1.7 }}>{sim.avaliacao.feedback}</div>
+                    </div>
+                  )}
+                  {sim.mensagens?.length > 0 && (
+                    <details style={{ marginTop: 10 }}>
+                      <summary style={{ fontSize: 12, color: C.azul, cursor: "pointer", fontWeight: 700, fontFamily: MONT }}>Ver transcrição completa ({sim.mensagens.length} mensagens)</summary>
+                      <div style={{ marginTop: 10, maxHeight: 280, overflowY: "auto", border: `1px solid ${C.borda}`, padding: 12, background: C.fundo }}>
+                        {sim.mensagens.map((m, j) => (
+                          <div key={j} style={{ marginBottom: 8, display: "flex", gap: 8 }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: m.role === "vendedor" ? C.azul : C.suave, fontFamily: MONT, flexShrink: 0, width: 60, paddingTop: 2 }}>
+                              {m.role === "vendedor" ? nomeV.split(" ")[0] : sim.cenario?.cliente?.nome?.split(" ")[0]}
+                            </div>
+                            <div style={{ fontSize: 12, color: C.texto, lineHeight: 1.5 }}>{m.content}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* Quizzes */}
+          {qzsV.length > 0 && (
+            <>
+              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 12, marginTop: 8 }}>TREINOS TÉCNICOS REALIZADOS</div>
+              {qzsV.map((r, i) => (
+                <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, padding: "16px 20px", marginBottom: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                        <span style={s.tag(C.azul)}>QUIZ TÉCNICO</span>
+                        {r.dificuldade && <span style={s.tag(C.suave)}>{r.dificuldade.toUpperCase()}</span>}
+                      </div>
+                      <div style={{ fontWeight: 700, color: C.texto, fontSize: 13, fontFamily: MONT }}>Tópico: {r.topico}</div>
+                      <div style={{ fontSize: 11, color: C.claro, marginTop: 2 }}>{r.data} · {r.questoes} questões</div>
+                    </div>
+                    <div style={{ fontSize: 28, fontWeight: 900, color: corNota(r.nota), fontFamily: MONT }}>{r.nota}</div>
+                  </div>
+                  {r.detalhes?.length > 0 && (
+                    <details style={{ marginTop: 10 }}>
+                      <summary style={{ fontSize: 12, color: C.azul, cursor: "pointer", fontWeight: 700, fontFamily: MONT }}>Ver detalhes das questões</summary>
+                      <div style={{ marginTop: 10 }}>
+                        {r.detalhes.map((d, j) => (
+                          <div key={j} style={{ padding: "10px 0", borderBottom: j < r.detalhes.length - 1 ? `1px solid ${C.borda}` : "none" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                              <span style={s.tag(d.correta ? C.verde : C.vermelho)}>{d.topico}</span>
+                              <span style={{ fontSize: 12, fontWeight: 700, color: d.correta ? C.verde : C.vermelho, fontFamily: MONT }}>{d.correta ? "+10 pts ✓" : "0 pts ✗"}</span>
+                            </div>
+                            <div style={{ fontSize: 12, color: C.texto, marginBottom: 3 }}>{d.enunciado}</div>
+                            <div style={{ fontSize: 11, color: C.suave, fontStyle: "italic" }}>→ {d.resposta}</div>
+                            <div style={{ fontSize: 11, color: d.correta ? C.verde : C.vermelho, marginTop: 3 }}>{d.explicacao}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {loading && <div style={{ textAlign: "center", color: C.suave, padding: 40 }}>Carregando...</div>}
+          {!loading && simsV.length === 0 && qzsV.length === 0 && (
+            <div style={{ textAlign: "center", padding: "60px 20px", color: C.suave }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>📊</div>
+              <div style={{ fontSize: 14, fontWeight: 700, fontFamily: MONT, marginBottom: 6 }}>Sem resultados ainda</div>
+              <div style={{ fontSize: 12 }}>Complete simulados e quizzes para ver seu relatório aqui.</div>
+            </div>
+          )}
+          <button style={{ ...s.btnAmareloFull, marginTop: 16 }} onClick={() => setTela("home")}>← Voltar ao início</button>
         </div>
       </div>
     );
@@ -1126,7 +1292,7 @@ export default function App() {
               { label: "TREINOS TÉCNICOS", value: quizzes.length, cor: C.suave },
               { label: "CRITÉRIO MAIS FRACO", value: criterioPior, cor: C.vermelho },
             ].map((m, i) => (
-              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "16px 18px" }}>
+              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "16px 18px" }}>
                 <div style={{ fontSize: i === 3 ? 15 : 26, fontWeight: 800, color: m.cor, fontFamily: MONT, lineHeight: 1.2 }}>{m.value}</div>
                 <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 6, fontFamily: MONT, fontWeight: 700 }}>{m.label}</div>
               </div>
@@ -1135,7 +1301,7 @@ export default function App() {
 
           {/* Ranking compacto */}
           <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>RANKING DA EQUIPE</div>
-          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 28 }}>
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, overflow: "hidden", marginBottom: 28 }}>
             {/* Cabeçalho */}
             <div style={{ display: "grid", gridTemplateColumns: "28px 130px 1fr repeat(6,48px) 60px 110px", gap: 6, padding: "10px 16px", borderBottom: `1.5px solid ${C.borda}`, background: C.fundo, alignItems: "center" }}>
               <div /><div style={{ fontSize: 10, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>VENDEDOR</div>
@@ -1153,8 +1319,8 @@ export default function App() {
                   <div style={{ fontWeight: 700, fontSize: 13, color: C.texto, fontFamily: MONT }}>{v.vendedor}</div>
                   <div style={{ fontSize: 10, color: C.claro }}>{v.totalSim}s · {v.totalQz}q</div>
                 </div>
-                <div style={{ height: 5, background: C.fundo, borderRadius: 3, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${(v.media / 10) * 100}%`, background: corNota(v.media), borderRadius: 3 }} />
+                <div style={{ height: 5, background: C.fundo, borderRadius: 0, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${(v.media / 10) * 100}%`, background: corNota(v.media), borderRadius: 0 }} />
                 </div>
                 {Object.keys(criteriosNomes).map(k => (
                   <div key={k} style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: v.criterios[k] ? corNota(v.criterios[k]) : C.claro, fontFamily: MONT }}>
@@ -1169,9 +1335,102 @@ export default function App() {
             ))}
           </div>
 
+          {/* Gráfico de Evolução por Vendedor */}
+          {(() => {
+            const CORES_VENDEDOR = [C.amarelo, C.azul, C.verde, C.vermelho, C.laranja, "#9b59b6", "#1abc9c", "#e67e22", "#2c3e50"];
+            const vendedoresComSims = stats.filter(v => {
+              const sims = simulados.filter(r => r.vendedor === v.vendedor);
+              return sims.length >= 1;
+            });
+            if (vendedoresComSims.length === 0) return null;
+
+            // Pegar todos os simulados ordenados por timestamp, pegar os últimos 10 por vendedor
+            const dadosVendedor = vendedoresComSims.map((v, vi) => {
+              const sims = simulados.filter(r => r.vendedor === v.vendedor).sort((a, b) => a.timestamp?.localeCompare(b.timestamp));
+              return { nome: v.vendedor, cor: CORES_VENDEDOR[vi % CORES_VENDEDOR.length], sims: sims.slice(-10) };
+            });
+
+            // Determinar eixo X: datas únicas de todos os simulados, ordenadas
+            const todasDatas = [...new Set(simulados.map(r => r.data))].sort((a, b) => {
+              const [da, ma, aa] = a.split("/"); const [db, mb, ab] = b.split("/");
+              return new Date(`${aa}-${ma}-${da}`) - new Date(`${ab}-${mb}-${db}`);
+            }).slice(-12);
+
+            const CHART_W = 900, CHART_H = 200, PAD_L = 40, PAD_R = 20, PAD_T = 16, PAD_B = 40;
+            const W = CHART_W - PAD_L - PAD_R;
+            const H = CHART_H - PAD_T - PAD_B;
+            const xPos = (i) => PAD_L + (todasDatas.length <= 1 ? W / 2 : (i / (todasDatas.length - 1)) * W);
+            const yPos = (nota) => PAD_T + H - ((nota / 10) * H);
+
+            return (
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>EVOLUÇÃO DA EQUIPE — SIMULADOS IA</div>
+                <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, padding: "20px 20px 12px" }}>
+                  {/* Legenda */}
+                  <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
+                    {dadosVendedor.map(v => (
+                      <div key={v.nome} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <div style={{ width: 24, height: 3, background: v.cor }} />
+                        <span style={{ fontSize: 11, color: C.texto, fontFamily: MONT, fontWeight: 700 }}>{v.nome}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* SVG Chart */}
+                  <svg width="100%" viewBox={`0 0 ${CHART_W} ${CHART_H}`} style={{ overflow: "visible" }}>
+                    {/* Grid horizontal */}
+                    {[0, 2, 4, 6, 8, 10].map(n => (
+                      <g key={n}>
+                        <line x1={PAD_L} y1={yPos(n)} x2={CHART_W - PAD_R} y2={yPos(n)} stroke={C.borda} strokeWidth="1" />
+                        <text x={PAD_L - 6} y={yPos(n) + 4} fontSize="9" fill={C.claro} textAnchor="end" fontFamily={MONT}>{n}</text>
+                      </g>
+                    ))}
+                    {/* Linhas de cada vendedor */}
+                    {dadosVendedor.map(v => {
+                      // Para cada data do eixo X, pegar a nota mais recente do vendedor naquela data (ou null)
+                      const pontosRaw = todasDatas.map((data, xi) => {
+                        const sim = [...v.sims].reverse().find(s => s.data === data);
+                        return sim ? { xi, nota: sim.nota } : null;
+                      }).filter(Boolean);
+
+                      if (pontosRaw.length === 0) return null;
+
+                      const pts = pontosRaw.map(p => ({ x: xPos(p.xi), y: yPos(p.nota), nota: p.nota }));
+
+                      // Path com linha suavizada
+                      const pathD = pts.length === 1
+                        ? `M ${pts[0].x} ${pts[0].y}`
+                        : pts.map((p, i) => {
+                            if (i === 0) return `M ${p.x} ${p.y}`;
+                            const prev = pts[i - 1];
+                            const cx = (prev.x + p.x) / 2;
+                            return `C ${cx} ${prev.y} ${cx} ${p.y} ${p.x} ${p.y}`;
+                          }).join(" ");
+
+                      return (
+                        <g key={v.nome}>
+                          {pts.length > 1 && <path d={pathD} fill="none" stroke={v.cor} strokeWidth="2.5" strokeLinejoin="round" />}
+                          {pts.map((p, i) => (
+                            <g key={i}>
+                              <circle cx={p.x} cy={p.y} r="5" fill={v.cor} stroke={C.branco} strokeWidth="2" />
+                              <text x={p.x} y={p.y - 9} fontSize="9" fill={v.cor} textAnchor="middle" fontWeight="700" fontFamily={MONT}>{p.nota.toFixed(1)}</text>
+                            </g>
+                          ))}
+                        </g>
+                      );
+                    })}
+                    {/* Eixo X — datas */}
+                    {todasDatas.map((data, i) => (
+                      <text key={data} x={xPos(i)} y={CHART_H - 6} fontSize="9" fill={C.claro} textAnchor="middle" fontFamily={MONT}>{data}</text>
+                    ))}
+                  </svg>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Últimas atividades */}
           <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>ÚLTIMAS ATIVIDADES</div>
-          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 24 }}>
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, overflow: "hidden", marginBottom: 24 }}>
             {historico.slice(0, 15).map((r, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", padding: "10px 18px", borderBottom: i < 14 ? `1px solid ${C.borda}` : "none", gap: 12 }}>
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: r.tipo === "simulado_ia" ? C.amareloEscuro : C.azul, flexShrink: 0 }} />
@@ -1226,7 +1485,7 @@ export default function App() {
           </div>
 
           {/* Cabeçalho */}
-          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "26px 30px", marginBottom: 18 }}>
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "26px 30px", marginBottom: 18 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
                 <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontFamily: MONT, fontWeight: 700, marginBottom: 6 }}>RELATÓRIO SEMANAL DE DESEMPENHO</div>
@@ -1244,7 +1503,7 @@ export default function App() {
               { label: "MÉDIA TREINO TÉCNICO", value: mediaQz > 0 ? mediaQz.toFixed(1) : "—", sub: `${qzsV.length} quizzes realizados`, cor: corNota(mediaQz) },
               { label: "TOTAL DE ATIVIDADES", value: simsV.length + qzsV.length, sub: `${simsV.length} simulados + ${qzsV.length} treinos`, cor: C.azul },
             ].map((m, i) => (
-              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "18px 20px", textAlign: "center" }}>
+              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "18px 20px", textAlign: "center" }}>
                 <div style={{ fontSize: 34, fontWeight: 900, color: m.cor, fontFamily: MONT }}>{m.value}</div>
                 <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 4, fontFamily: MONT, fontWeight: 700 }}>{m.label}</div>
                 <div style={{ fontSize: 11, color: C.suave, marginTop: 4 }}>{m.sub}</div>
@@ -1254,7 +1513,7 @@ export default function App() {
 
           {/* Critérios médios */}
           {Object.values(mediaCriterios).some(v => v !== null) && (
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 18 }}>
+            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, overflow: "hidden", marginBottom: 18 }}>
               <div style={{ padding: "13px 20px", borderBottom: `1px solid ${C.borda}`, fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT }}>AVALIAÇÃO POR CRITÉRIO — MÉDIA DO PERÍODO</div>
               {Object.entries(criteriosNomesCompletos).map(([k, label]) => {
                 const val = mediaCriterios[k];
@@ -1262,8 +1521,8 @@ export default function App() {
                 return (
                   <div key={k} style={{ padding: "13px 20px", borderBottom: `1px solid ${C.borda}`, display: "flex", alignItems: "center", gap: 14 }}>
                     <div style={{ flex: 1, fontSize: 13, color: C.texto }}>{label}</div>
-                    <div style={{ width: 180, height: 7, background: C.fundo, borderRadius: 3, overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: `${val * 10}%`, background: corNota(val), borderRadius: 3 }} />
+                    <div style={{ width: 180, height: 7, background: C.fundo, borderRadius: 0, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${val * 10}%`, background: corNota(val), borderRadius: 0 }} />
                     </div>
                     <div style={{ fontSize: 15, fontWeight: 800, color: corNota(val), fontFamily: MONT, width: 28, textAlign: "right" }}>{val}</div>
                     <div style={{ fontSize: 11, color: C.suave, width: 76 }}>{val >= 8 ? "✅ Forte" : val >= 6 ? "⚠️ Regular" : "🔴 Fraco"}</div>
@@ -1275,13 +1534,13 @@ export default function App() {
 
           {/* Evolução */}
           {simsV.length > 1 && (
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "18px 20px", marginBottom: 18 }}>
+            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "18px 20px", marginBottom: 18 }}>
               <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 14 }}>EVOLUÇÃO — DO MAIS ANTIGO AO MAIS RECENTE</div>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 80 }}>
                 {[...simsV].reverse().map((sim, i) => (
                   <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
                     <div style={{ fontSize: 10, fontWeight: 700, color: corNota(sim.nota), fontFamily: MONT }}>{sim.nota.toFixed(1)}</div>
-                    <div style={{ width: "100%", height: Math.max(10, (sim.nota / 10) * 70), background: corNota(sim.nota), borderRadius: "4px 4px 0 0", opacity: 0.85 }} />
+                    <div style={{ width: "100%", height: Math.max(10, (sim.nota / 10) * 70), background: corNota(sim.nota), borderRadius: 0, opacity: 0.85 }} />
                     <div style={{ fontSize: 9, color: C.claro, textAlign: "center" }}>{sim.data}</div>
                   </div>
                 ))}
@@ -1295,7 +1554,7 @@ export default function App() {
             <>
               <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 12 }}>ANÁLISE DETALHADA DAS CONVERSAS</div>
               {simsV.map((sim, i) => (
-                <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "20px 22px", marginBottom: 14 }}>
+                <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, padding: "20px 22px", marginBottom: 14 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                     <div>
                       <div style={{ fontWeight: 700, fontSize: 14, color: C.texto, fontFamily: MONT }}>{sim.cenario?.empresa?.nome} · {sim.cenario?.cliente?.nome}</div>
@@ -1316,7 +1575,7 @@ export default function App() {
                   {sim.avaliacao?.criterios && (
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
                       {Object.entries(sim.avaliacao.criterios).map(([k, val]) => (
-                        <div key={k} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: corNota(val) + "18", color: corNota(val), fontFamily: MONT, fontWeight: 700 }}>
+                        <div key={k} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 0, background: corNota(val) + "18", color: corNota(val), fontFamily: MONT, fontWeight: 700 }}>
                           {criteriosNomesCompletos[k]?.split(" ")[0]} {val}
                         </div>
                       ))}
@@ -1325,7 +1584,7 @@ export default function App() {
 
                   {/* Penalizações */}
                   {sim.avaliacao?.penalizacoes?.filter(p => p && p !== "array vazio").length > 0 && (
-                    <div style={{ background: "#FEECEC", borderRadius: 8, padding: "8px 12px", marginBottom: 10 }}>
+                    <div style={{ background: "#FEECEC", borderRadius: 0, padding: "8px 12px", marginBottom: 10 }}>
                       <div style={{ fontSize: 10, color: C.vermelho, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>⚠️ PENALIZAÇÕES APLICADAS</div>
                       {sim.avaliacao.penalizacoes.map((p, j) => <div key={j} style={{ fontSize: 12, color: C.vermelho }}>· {p}</div>)}
                     </div>
@@ -1333,7 +1592,7 @@ export default function App() {
 
                   {/* Bônus */}
                   {sim.avaliacao?.bonus?.filter(b => b && b !== "array vazio").length > 0 && (
-                    <div style={{ background: "#EAFAF1", borderRadius: 8, padding: "8px 12px", marginBottom: 10 }}>
+                    <div style={{ background: "#EAFAF1", borderRadius: 0, padding: "8px 12px", marginBottom: 10 }}>
                       <div style={{ fontSize: 10, color: C.verde, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>✅ BÔNUS APLICADOS</div>
                       {sim.avaliacao.bonus.map((b, j) => <div key={j} style={{ fontSize: 12, color: C.verde }}>· {b}</div>)}
                     </div>
@@ -1360,7 +1619,7 @@ export default function App() {
 
                   {/* Recomendação ao gestor */}
                   {sim.avaliacao?.recomendacao_gestor && (
-                    <div style={{ background: "#FFF8E1", border: `1px solid ${C.amarelo}44`, borderRadius: 8, padding: "10px 14px" }}>
+                    <div style={{ background: "#FFF8E1", border: `1px solid ${C.amarelo}44`, borderRadius: 0, padding: "10px 14px" }}>
                       <div style={{ fontSize: 10, color: C.amareloEscuro, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>💡 AÇÃO RECOMENDADA PARA O GESTOR</div>
                       <div style={{ fontSize: 12, color: C.texto, lineHeight: 1.6 }}>{sim.avaliacao.recomendacao_gestor}</div>
                     </div>
@@ -1370,7 +1629,7 @@ export default function App() {
                   {sim.mensagens?.length > 0 && (
                     <details style={{ marginTop: 14 }}>
                       <summary style={{ fontSize: 12, color: C.azul, cursor: "pointer", fontWeight: 700, fontFamily: MONT }}>Ver transcrição completa ({sim.mensagens.length} mensagens)</summary>
-                      <div style={{ marginTop: 10, maxHeight: 280, overflowY: "auto", border: `1px solid ${C.borda}`, borderRadius: 8, padding: 12, background: C.fundo }}>
+                      <div style={{ marginTop: 10, maxHeight: 280, overflowY: "auto", border: `1px solid ${C.borda}`, borderRadius: 0, padding: 12, background: C.fundo }}>
                         {sim.mensagens.map((m, j) => (
                           <div key={j} style={{ marginBottom: 8, display: "flex", gap: 8 }}>
                             <div style={{ fontSize: 10, fontWeight: 700, color: m.role === "vendedor" ? C.azul : C.suave, fontFamily: MONT, flexShrink: 0, width: 60, paddingTop: 2 }}>
@@ -1389,7 +1648,7 @@ export default function App() {
 
           {/* Plano de ação consolidado */}
           {recomendacoes.length > 0 && (
-            <div style={{ background: C.branco, border: `2px solid ${C.amarelo}`, borderRadius: 14, padding: "22px 24px", marginBottom: 24 }}>
+            <div style={{ background: C.branco, border: `2px solid ${C.amarelo}`, borderRadius: 0, padding: "22px 24px", marginBottom: 24 }}>
               <div style={{ fontSize: 10, color: C.amareloEscuro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 14 }}>📋 PLANO DE AÇÃO — REUNIÃO SEMANAL</div>
               {recomendacoes.map((r, i) => (
                 <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10, alignItems: "flex-start" }}>
