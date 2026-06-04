@@ -223,14 +223,17 @@ const salvarSimulacao = async (dados) => {
 
 const buscarSimulacoes = async (vendedor) => {
   try {
+    console.log("[VB] buscarSimulacoes chamado, vendedor:", vendedor);
     const q = vendedor
       ? query(collection(db, "simulacoes_v2"), where("vendedor", "==", vendedor))
       : query(collection(db, "simulacoes_v2"));
     const snap = await getDocs(q);
+    console.log("[VB] docs retornados:", snap.docs.length);
+    snap.docs.slice(0, 3).forEach(d => console.log("[VB] doc exemplo:", JSON.stringify({ vendedor: d.data().vendedor, tipo: d.data().tipo, nota: d.data().nota, timestamp: d.data().timestamp })));
     const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     return docs.sort((a, b) => (b.timestamp || "").localeCompare(a.timestamp || ""));
   } catch (e) {
-    console.error("Firebase buscarSimulacoes erro:", e);
+    console.error("[VB] Firebase ERRO:", e.code, e.message);
     return [];
   }
 };
@@ -892,14 +895,14 @@ export default function App() {
     setSenhaAtual(""); setSenhaNova(""); setSenhaConfirm("");
   };
 
-  const carregarTodos = async () => { setLoading(true); setHistorico(await buscarSimulacoes(null)); setLoading(false); };
+  const carregarTodos = async () => { setLoading(true); const dados = await buscarSimulacoes(null); console.log("[VB] carregarTodos resultado:", dados.length); setHistorico(dados); setLoading(false); return dados; };
   const verMeus = async () => { setTela("historico"); setLoading(true); const dados = await buscarSimulacoes(usuario.nome); setHistorico(dados); setLoading(false); };
 
   // Restaurar dados ao carregar com sessão salva
   useEffect(() => {
     if (usuarioSalvo) {
       if (usuarioSalvo.role === "admin") { carregarTodos(); }
-      else { buscarSimulacoes(usuarioSalvo.nome).then(dados => setHistorico(dados)); }
+      else { buscarSimulacoes(usuarioSalvo.nome).then(dados => { console.log("[VB] useEffect vendedor dados:", dados.length); setHistorico(dados); }); }
     }
   }, []);
 
@@ -908,7 +911,7 @@ export default function App() {
       usuario={usuario}
       onHome={() => setTela(usuario ? "home" : "login")}
       onHistorico={verMeus}
-      onGestor={() => { carregarTodos(); setTela("gestor"); }}
+      onGestor={async () => { const dados = await carregarTodos(); setTela("gestor"); }}
       onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }}
       onSair={sair}
     />
@@ -1258,6 +1261,16 @@ export default function App() {
 
   // ── PAINEL GESTOR ──
   if (tela === "gestor") {
+    if (loading) return (
+      <div style={{ ...s.page, background: C.fundo }}>
+        <style>{FONTS}</style>
+        <ModalSenha />
+        <Topbar usuario={usuario} onHome={() => setTela("home")} onHistorico={() => {}} onGestor={() => {}} onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }} onSair={sair} />
+        <div style={{ maxWidth: 1060, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+          <Spinner texto="Carregando dados da equipe..." />
+        </div>
+      </div>
+    );
     const simulados = historico.filter(r => r.tipo === "simulado_ia" && r.nota);
     const quizzes = historico.filter(r => r.tipo === "quiz" && r.nota);
     const vendedores = [...new Set(historico.map(r => r.vendedor))];
