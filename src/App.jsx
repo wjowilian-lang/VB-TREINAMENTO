@@ -889,7 +889,7 @@ export default function App() {
   };
 
   const carregarTodos = async () => { setLoading(true); setHistorico(await buscarSimulacoes(null)); setLoading(false); };
-  const verMeus = async () => { setLoading(true); setHistorico(await buscarSimulacoes(usuario.nome)); setLoading(false); setTela("historico"); };
+  const verMeus = async () => { setTela("historico"); setLoading(true); const dados = await buscarSimulacoes(usuario.nome); setHistorico(dados); setLoading(false); };
 
   // Restaurar dados ao carregar com sessão salva
   useEffect(() => {
@@ -1036,8 +1036,8 @@ export default function App() {
   // ── HISTÓRICO (relatório completo do próprio vendedor) ──
   if (tela === "historico") {
     const nomeV = usuario?.nome || "";
-    const simsV = historico.filter(r => r.tipo === "simulado_ia" && r.nota);
-    const qzsV = historico.filter(r => r.tipo === "quiz" && r.nota);
+    const simsV = historico.filter(r => r.tipo === "simulado_ia" && r.nota && r.vendedor === nomeV);
+    const qzsV = historico.filter(r => r.tipo === "quiz" && r.nota && r.vendedor === nomeV);
     const criteriosNomesCompletos = { qualificacao: "Qualificação", necessidades: "Descoberta de Necessidades", tecnica: "Conhecimento Técnico", objecoes: "Tratamento de Objeções", fechamento: "Fechamento", comunicacao: "Comunicação" };
     const mediaSim = simsV.length > 0 ? simsV.reduce((a, b) => a + b.nota, 0) / simsV.length : 0;
     const mediaQz = qzsV.length > 0 ? qzsV.reduce((a, b) => a + b.nota, 0) / qzsV.length : 0;
@@ -1047,6 +1047,19 @@ export default function App() {
       mediaCriterios[k] = vals.length > 0 ? parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)) : null;
     });
     const dataHoje = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+
+    // Mostrar spinner enquanto carrega
+    if (loading) return (
+      <div style={{ ...s.page, background: C.fundo }}>
+        <style>{FONTS}</style>
+        <ModalSenha />
+        <Nav />
+        <div style={{ maxWidth: 820, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+          <Spinner texto="Carregando seus resultados..." />
+        </div>
+      </div>
+    );
+
     return (
       <div style={{ ...s.page, background: C.fundo }}>
         <style>{FONTS}</style>
