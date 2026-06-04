@@ -228,7 +228,21 @@ const buscarSimulacoes = async (vendedor) => {
       : query(collection(db, "simulacoes_v2"), orderBy("timestamp", "desc"));
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch (e) { return []; }
+  } catch (e) {
+    console.error("Firebase buscarSimulacoes erro:", e);
+    // Fallback: tentar sem orderBy se falhar (índice não criado)
+    try {
+      const q2 = vendedor
+        ? query(collection(db, "simulacoes_v2"), where("vendedor", "==", vendedor))
+        : query(collection(db, "simulacoes_v2"));
+      const snap2 = await getDocs(q2);
+      const docs = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
+      return docs.sort((a, b) => (b.timestamp || "").localeCompare(a.timestamp || ""));
+    } catch (e2) {
+      console.error("Firebase fallback erro:", e2);
+      return [];
+    }
+  }
 };
 
 // ─── OPENAI API ───────────────────────────────────────────────────
