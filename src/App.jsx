@@ -234,20 +234,38 @@ const buscarSimulacoes = async (vendedor) => {
 
 // ─── OPENAI API ───────────────────────────────────────────────────
 const callGPT = async (messages, systemPrompt, jsonMode = false) => {
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
-    body: JSON.stringify({
-      model: "gpt-4o",
-      messages: [{ role: "system", content: systemPrompt }, ...messages],
-      temperature: 0.8,
-      max_tokens: 1000,
-      ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-    }),
+  // Tenta direto primeiro, cai para proxy CORS se falhar
+  const endpoints = [
+    "https://api.openai.com/v1/chat/completions",
+    "https://corsproxy.io/?https://api.openai.com/v1/chat/completions",
+    "https://cors-anywhere.herokuapp.com/https://api.openai.com/v1/chat/completions",
+  ];
+
+  const body = JSON.stringify({
+    model: "gpt-4o",
+    messages: [{ role: "system", content: systemPrompt }, ...messages],
+    temperature: 0.8,
+    max_tokens: 1000,
+    ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Erro na API OpenAI");
-  return data.choices[0].message.content;
+
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
+        body,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || "Erro na API OpenAI");
+      return data.choices[0].message.content;
+    } catch (e) {
+      // Se for o último endpoint, lança o erro
+      if (url === endpoints[endpoints.length - 1]) throw e;
+      // Senão tenta o próximo
+      console.warn("Endpoint falhou, tentando próximo:", url, e.message);
+    }
+  }
 };
 
 const gerarCenario = async (segmento, perfis, dificuldade) => {
@@ -276,96 +294,36 @@ Retorne APENAS um JSON válido com esta estrutura exata:
 
 const avaliarConversa = async (cenario, mensagens) => {
   const conversa = mensagens.map(m => `${m.role === "vendedor" ? "VENDEDOR" : "CLIENTE"}: ${m.content}`).join("\n");
-  const totalMsgsVendedor = mensagens.filter(m => m.role === "vendedor").length;
   const prompt = `${VB_KNOWLEDGE}
 
-Você é um avaliador RIGOROSO e DIFERENCIADO de vendas consultivas B2B de telefonia VoIP.
-Sua missão é dar notas REAIS que reflitam diferenças genuínas entre vendedores.
-JAMAIS dê notas iguais ou próximas para critérios diferentes — isso não ajuda o gestor.
+Você é um avaliador especialista em vendas consultivas B2B de telefonia VoIP.
 
 CENÁRIO:
 - Empresa: ${cenario.empresa.nome} (${cenario.empresa.porte}, ${cenario.empresa.situacao_atual})
 - Cliente: ${cenario.cliente.nome}, ${cenario.cliente.cargo}
-- Dores reais do cliente: ${cenario.dores.join(", ")}
-- Objeções previstas: ${cenario.objecoes_previstas?.join(", ") || "não informadas"}
-- Contexto secreto que o vendedor deveria descobrir: ${cenario.contexto_secreto}
+- Dores reais: ${cenario.dores.join(", ")}
 
-CONVERSA COMPLETA (${totalMsgsVendedor} mensagens do vendedor):
+CONVERSA COMPLETA:
 ${conversa}
 
-RUBRICA DE AVALIAÇÃO — aplique com rigor:
-
-QUALIFICAÇÃO (0-10):
-- 9-10: Perguntou situação atual, número de ramais, dores, orçamento e prazo antes de apresentar produto
-- 7-8: Qualificou parcialmente, deixou lacunas importantes
-- 5-6: Apresentou produto antes de qualificar ou qualificou superficialmente
-- 0-4: Não qualificou nada, foi direto para pitch ou preço
-
-DESCOBERTA DE NECESSIDADES (0-10):
-- 9-10: Usou SPIN ou equivalente, descobriu dores profundas, fez o cliente sentir o problema
-- 7-8: Fez perguntas mas não aprofundou nas implicações
-- 5-6: Perguntou o básico mas não explorou
-- 0-4: Não investigou necessidades, assumiu o que o cliente precisava
-
-CONHECIMENTO TÉCNICO (0-10):
-- 9-10: Demonstrou domínio de SIP, PABX, portabilidade, diferenciais VB com precisão
-- 7-8: Explicou bem os produtos mas com lacunas técnicas menores
-- 5-6: Conhecimento superficial, evitou perguntas técnicas ou deu respostas vagas
-- 0-4: Errou informações técnicas, inventou dados, não soube responder
-
-TRATAMENTO DE OBJEÇÕES (0-10):
-- 9-10: Antecipou objeções, usou argumentos específicos (suporte 24h, ISO, teste grátis), reconverteu resistência
-- 7-8: Tratou objeções mas sem profundidade ou deixou alguma sem resposta
-- 5-6: Cedeu rápido (ex: deu desconto sem explorar valor) ou ignorou objeções
-- 0-4: Não soube tratar objeções, ficou na defensiva ou concordou com o cliente sem argumentar
-
-FECHAMENTO (0-10):
-- 9-10: Tentou fechar ativamente, usou o teste grátis de 14 dias, criou urgência real
-- 7-8: Sinalizou próximos passos mas não fechou com clareza
-- 5-6: Deixou a conversa sem direção clara ou próximo passo definido
-- 0-4: Não tentou fechar, perdeu oportunidade clara, encerrou sem compromisso
-
-COMUNICAÇÃO (0-10):
-- 9-10: Clara, adaptada ao perfil do cliente, linguagem correta para o nível técnico, empática
-- 7-8: Boa comunicação com alguns excessos técnicos ou formais
-- 5-6: Comunicação mecânica, muito formal ou muito informal para o contexto
-- 0-4: Comunicação confusa, mensagens longas sem objetivo, tom inadequado
-
-PENALIZAÇÕES AUTOMÁTICAS (subtraia da nota final):
-- Inventou preços, prazos ou funcionalidades que não existem na VB: -2.0
-- Falou mal de concorrente diretamente (ex: "a Vivo é horrível"): -1.0
-- Apresentou preço antes de qualificar: -1.5
-- Prometeu coisas fora do escopo da VB: -1.5
-- Conversa muito curta (menos de 4 mensagens do vendedor) sem motivo: -2.0
-
-BÔNUS (some na nota final, máx +1.0):
-- Mencionou o teste grátis de 14 dias como gatilho de fechamento: +0.5
-- Usou o argumento de suporte 24h + ISO 9001 corretamente: +0.3
-- Descobriu o contexto secreto do cenário: +0.5
-
-Calcule a nota final como média dos 6 critérios + bônus - penalizações, limitada entre 1.0 e 10.0.
-A nota DEVE ser diferente da média simples se houver penalizações ou bônus.
-Notas finais próximas de 7.5 para todos são PROIBIDAS — diferencie com base no que realmente aconteceu.
-
-Retorne APENAS um JSON válido:
+Avalie o desempenho do VENDEDOR e retorne APENAS um JSON válido:
 {
-  "nota": 6.2,
+  "nota": 7.5,
   "criterios": {
-    "qualificacao": 7,
-    "necessidades": 5,
+    "qualificacao": 8,
+    "necessidades": 7,
     "tecnica": 8,
-    "objecoes": 4,
-    "fechamento": 6,
-    "comunicacao": 7
+    "objecoes": 6,
+    "fechamento": 7,
+    "comunicacao": 8
   },
-  "penalizacoes": ["descrição da penalização aplicada se houver"],
-  "bonus": ["descrição do bônus aplicado se houver"],
-  "fortes": ["ponto forte específico 1", "ponto forte específico 2"],
-  "melhorias": ["melhoria específica e acionável 1", "melhoria específica e acionável 2", "melhoria 3"],
-  "feedback": "Parágrafo único, direto e construtivo sobre o desempenho real. Citar momentos específicos da conversa.",
-  "encerramento": "venda_fechada | proposta_enviada | agendamento | recusa | inconcluso",
-  "recomendacao_gestor": "Uma ação concreta que o gestor deve fazer com esse vendedor na próxima semana (ex: role-play de objeções de preço, revisão de conteúdo técnico sobre portabilidade, etc.)"
-}`;
+  "fortes": ["ponto forte 1", "ponto forte 2"],
+  "melhorias": ["melhoria 1", "melhoria 2"],
+  "feedback": "Parágrafo único e construtivo sobre o desempenho geral",
+  "encerramento": "venda_fechada | proposta_enviada | agendamento | recusa | inconcluso"
+}
+
+Critérios 0-10. Seja justo mas rigoroso. A nota deve refletir a realidade.`;
 
   const raw = await callGPT([], prompt, true);
   return JSON.parse(raw);
@@ -859,7 +817,6 @@ export default function App() {
   const [erroLogin, setErroLogin] = useState("");
   const [historico, setHistorico] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [relatorioVendedor, setRelatorioVendedor] = useState(null);
   // troca de senha
   const [modalSenha, setModalSenha] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState("");
@@ -1084,7 +1041,7 @@ export default function App() {
     const simulados = historico.filter(r => r.tipo === "simulado_ia" && r.nota);
     const quizzes = historico.filter(r => r.tipo === "quiz" && r.nota);
     const vendedores = [...new Set(historico.map(r => r.vendedor))];
-    const criteriosNomes = { qualificacao: "Qualif.", necessidades: "Necessid.", tecnica: "Técnica", objecoes: "Objeções", fechamento: "Fecham.", comunicacao: "Comunic." };
+    const criteriosNomes = { qualificacao: "Qualificação", necessidades: "Necessidades", tecnica: "Técnica", objecoes: "Objeções", fechamento: "Fechamento", comunicacao: "Comunicação" };
 
     const stats = vendedores.map(v => {
       const sims = simulados.filter(r => r.vendedor === v);
@@ -1092,382 +1049,96 @@ export default function App() {
       const mediaSim = sims.length > 0 ? (sims.reduce((a, b) => a + b.nota, 0) / sims.length) : 0;
       const mediaQz = qzs.length > 0 ? (qzs.reduce((a, b) => a + b.nota, 0) / qzs.length) : 0;
       const media = sims.length > 0 ? mediaSim : mediaQz;
+
+      // Média por critério
       const criterios = {};
       if (sims.length > 0) {
         Object.keys(criteriosNomes).forEach(k => {
           const vals = sims.filter(s => s.avaliacao?.criterios?.[k]).map(s => s.avaliacao.criterios[k]);
-          criterios[k] = vals.length > 0 ? parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)) : null;
+          criterios[k] = vals.length > 0 ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : null;
         });
       }
       return { vendedor: v, totalSim: sims.length, totalQz: qzs.length, media: parseFloat(media.toFixed(1)), mediaSim: parseFloat(mediaSim.toFixed(1)), mediaQz: parseFloat(mediaQz.toFixed(1)), criterios };
     }).sort((a, b) => b.media - a.media);
 
     const mediaGeral = simulados.length > 0 ? (simulados.reduce((a, b) => a + b.nota, 0) / simulados.length).toFixed(1) : "—";
-    const criterioPiorKey = (() => {
-      const totais = {};
-      simulados.forEach(r => { if (r.avaliacao?.criterios) Object.entries(r.avaliacao.criterios).forEach(([k, v]) => { totais[k] = (totais[k] || []).concat(v); }); });
-      let pior = null, menorMedia = 99;
-      Object.entries(totais).forEach(([k, vals]) => { const m = vals.reduce((a, b) => a + b, 0) / vals.length; if (m < menorMedia) { menorMedia = m; pior = k; } });
-      return pior;
-    })();
-
-    const abrirRelatorio = (nomeVendedor) => {
-      setRelatorioVendedor(nomeVendedor);
-      setTela("relatorio");
-    };
 
     return (
       <div style={{ ...s.page, background: C.fundo }}>
         <style>{FONTS}</style>
         <ModalSenha />
         <Topbar usuario={usuario} onHome={() => setTela("home")} onHistorico={() => {}} onGestor={() => {}} onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }} onSair={sair} />
-        <div style={{ maxWidth: 1060, margin: "0 auto", padding: "36px 24px" }}>
-
-          {/* Header */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
-            <div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: C.texto, fontFamily: MONT }}>Painel do Gestor</div>
-              <div style={{ fontSize: 13, color: C.suave }}>{historico.length} registros · {vendedores.length} vendedores ativos</div>
-            </div>
-            <button style={{ ...s.btnGhost, fontSize: 12 }} onClick={() => { carregarTodos(); }}>↻ Atualizar</button>
+        <div style={{ maxWidth: 980, margin: "0 auto", padding: "40px 24px" }}>
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: C.texto, fontFamily: MONT }}>Painel do Gestor</div>
+            <div style={{ fontSize: 13, color: C.suave }}>{historico.length} registros · {vendedores.length} vendedores</div>
           </div>
 
-          {/* Métricas */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 28 }}>
+          {/* Cards de métricas */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 28 }}>
             {[
-              { label: "MÉDIA GERAL", value: mediaGeral, cor: corNota(parseFloat(mediaGeral) || 0) },
-              { label: "SIMULADOS IA", value: simulados.length, cor: C.azul },
-              { label: "TREINOS TÉCNICOS", value: quizzes.length, cor: C.suave },
-              { label: "CRITÉRIO MAIS FRACO", value: criterioPiorKey ? criteriosNomes[criterioPiorKey] : "—", cor: C.vermelho },
+              { label: "MÉDIA GERAL", value: mediaGeral, cor: C.amareloEscuro },
+              { label: "SIMULADOS IA", value: simulados.length, cor: C.verde },
+              { label: "TREINOS TÉCNICOS", value: quizzes.length, cor: C.azul },
+              { label: "VENDEDORES ATIVOS", value: vendedores.length, cor: C.texto },
             ].map((m, i) => (
-              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "16px 18px" }}>
-                <div style={{ fontSize: i === 3 ? 16 : 26, fontWeight: 800, color: m.cor, fontFamily: MONT, lineHeight: 1.2 }}>{m.value}</div>
-                <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 6, fontFamily: MONT, fontWeight: 700 }}>{m.label}</div>
+              <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "18px 20px" }}>
+                <div style={{ fontSize: 28, fontWeight: 800, color: m.cor, fontFamily: MONT }}>{m.value}</div>
+                <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 4, fontFamily: MONT, fontWeight: 700 }}>{m.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Ranking compacto */}
-          <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>RANKING DA EQUIPE</div>
+          {/* Ranking */}
+          <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 14, fontWeight: 700, fontFamily: MONT }}>RANKING DA EQUIPE</div>
           <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 28 }}>
-            {/* Cabeçalho */}
-            <div style={{ display: "grid", gridTemplateColumns: "32px 140px 1fr repeat(6,52px) 70px 100px", gap: 8, padding: "10px 16px", borderBottom: `1.5px solid ${C.borda}`, background: C.fundo }}>
-              <div style={{ fontSize: 10, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>#</div>
-              <div style={{ fontSize: 10, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>VENDEDOR</div>
-              <div />
-              {Object.values(criteriosNomes).map(n => (
-                <div key={n} style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>{n.toUpperCase()}</div>
-              ))}
-              <div style={{ fontSize: 10, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>MÉDIA</div>
-              <div />
-            </div>
             {loading && <div style={{ padding: 24, color: C.suave, textAlign: "center" }}>Carregando...</div>}
             {!loading && stats.length === 0 && <div style={{ padding: 24, color: C.suave, textAlign: "center" }}>Nenhum resultado ainda.</div>}
             {stats.map((v, i) => (
-              <div key={v.vendedor} style={{ display: "grid", gridTemplateColumns: "32px 140px 1fr repeat(6,52px) 70px 100px", gap: 8, padding: "12px 16px", borderBottom: i < stats.length - 1 ? `1px solid ${C.borda}` : "none", alignItems: "center" }}>
-                <div style={{ width: 24, height: 24, borderRadius: "50%", background: i === 0 ? C.amarelo : C.fundo, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: i === 0 ? C.preto : C.suave, fontFamily: MONT }}>{i + 1}</div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: C.texto, fontFamily: MONT }}>{v.vendedor}</div>
-                  <div style={{ fontSize: 10, color: C.claro }}>{v.totalSim}s · {v.totalQz}q</div>
+              <div key={v.vendedor} style={{ padding: "16px 20px", borderBottom: i < stats.length - 1 ? `1px solid ${C.borda}` : "none" }}>
+                <div style={{ display: "flex", alignItems: "center", marginBottom: v.criterios && Object.keys(v.criterios).length > 0 ? 12 : 0 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: i === 0 ? C.amarelo : C.fundo, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: i === 0 ? C.preto : C.suave, marginRight: 16, flexShrink: 0, fontFamily: MONT }}>{i + 1}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: C.texto, fontFamily: MONT }}>{v.vendedor}</div>
+                    <div style={{ fontSize: 11, color: C.claro }}>{v.totalSim} simulados IA · {v.totalQz} treinos técnicos</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 26, fontWeight: 900, color: corNota(v.media), fontFamily: MONT }}>{v.media || "—"}</div>
+                    <div style={{ fontSize: 10, color: C.claro }}>média geral</div>
+                  </div>
                 </div>
-                {/* Barra visual da média */}
-                <div style={{ height: 6, background: C.fundo, borderRadius: 3, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${(v.media / 10) * 100}%`, background: corNota(v.media), borderRadius: 3 }} />
-                </div>
-                {/* Notas por critério */}
-                {Object.keys(criteriosNomes).map(k => {
-                  const val = v.criterios[k];
-                  return (
-                    <div key={k} style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: val ? corNota(val) : C.claro, fontFamily: MONT }}>
-                      {val ?? "—"}
-                    </div>
-                  );
-                })}
-                {/* Média geral */}
-                <div style={{ textAlign: "center", fontSize: 20, fontWeight: 900, color: corNota(v.media), fontFamily: MONT }}>{v.media || "—"}</div>
-                {/* Botão relatório */}
-                <button onClick={() => abrirRelatorio(v.vendedor)} style={{ ...s.btnGhost, fontSize: 11, padding: "5px 10px", color: C.amareloEscuro, borderColor: C.amarelo + "88" }}>
-                  Ver relatório →
-                </button>
+                {/* Critérios por vendedor */}
+                {v.criterios && Object.keys(v.criterios).some(k => v.criterios[k]) && (
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingLeft: 44 }}>
+                    {Object.entries(v.criterios).map(([k, val]) => val ? (
+                      <div key={k} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, background: corNota(parseFloat(val)) + "15", color: corNota(parseFloat(val)), fontFamily: MONT, fontWeight: 700 }}>
+                        {criteriosNomes[k].split(" ")[0]} {val}
+                      </div>
+                    ) : null)}
+                  </div>
+                )}
               </div>
             ))}
           </div>
 
           {/* Últimas atividades */}
-          <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>ÚLTIMAS ATIVIDADES</div>
+          <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 14, fontWeight: 700, fontFamily: MONT }}>ÚLTIMAS ATIVIDADES</div>
           <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 24 }}>
-            {historico.slice(0, 15).map((r, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", padding: "10px 18px", borderBottom: i < 14 ? `1px solid ${C.borda}` : "none", gap: 12 }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: r.tipo === "simulado_ia" ? C.amareloEscuro : C.azul, flexShrink: 0 }} />
+            {historico.slice(0, 20).map((r, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", padding: "12px 20px", borderBottom: `1px solid ${C.borda}` }}>
                 <div style={{ flex: 1 }}>
                   <span style={{ fontWeight: 700, color: C.texto, fontSize: 13, fontFamily: MONT }}>{r.vendedor}</span>
-                  <span style={{ color: C.suave, fontSize: 12 }}> · {r.tipo === "simulado_ia" ? (r.cenario?.empresa?.nome || "Simulado IA") : `Quiz · ${r.topico || "Técnico"}`}</span>
+                  <span style={{ color: C.suave, fontSize: 12 }}> · {r.tipo === "simulado_ia" ? `${r.cenario?.empresa?.nome || "Simulado IA"}` : `Quiz ${r.topico || "Técnico"}`}</span>
+                  <span style={{ fontSize: 10, color: r.tipo === "simulado_ia" ? C.amareloEscuro : C.azul, marginLeft: 6 }}>{r.tipo === "simulado_ia" ? "● IA" : "● QUIZ"}</span>
                 </div>
-                <div style={{ fontSize: 11, color: C.claro }}>{r.data}</div>
-                <div style={{ fontSize: 18, fontWeight: 900, color: r.nota ? corNota(r.nota) : C.claro, fontFamily: MONT, width: 36, textAlign: "right" }}>
-                  {r.nota ? (typeof r.nota === "number" ? r.nota.toFixed(1) : r.nota) : "—"}
-                </div>
+                <div style={{ fontSize: 11, color: C.claro, marginRight: 16 }}>{r.data}</div>
+                <div style={{ fontSize: 20, fontWeight: 900, color: r.nota ? corNota(r.nota) : C.claro, fontFamily: MONT }}>{r.nota ? (r.nota.toFixed ? r.nota.toFixed(1) : r.nota) : "—"}</div>
               </div>
             ))}
           </div>
 
-          <div style={{ display: "flex", gap: 10 }}>
-            <button style={s.btnAmarelo} onClick={() => setTela("home")}>← Treinamento</button>
-            <button style={s.btnGhost} onClick={sair}>Sair</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── RELATÓRIO INDIVIDUAL ──
-  if (tela === "relatorio" && relatorioVendedor) {
-    const nomeV = relatorioVendedor;
-    const simsV = historico.filter(r => r.tipo === "simulado_ia" && r.vendedor === nomeV && r.nota);
-    const qzsV = historico.filter(r => r.tipo === "quiz" && r.vendedor === nomeV && r.nota);
-    const criteriosNomes = { qualificacao: "Qualificação", necessidades: "Descoberta de Necessidades", tecnica: "Conhecimento Técnico", objecoes: "Tratamento de Objeções", fechamento: "Fechamento", comunicacao: "Comunicação" };
-
-    const mediaSim = simsV.length > 0 ? (simsV.reduce((a, b) => a + b.nota, 0) / simsV.length) : 0;
-    const mediaQz = qzsV.length > 0 ? (qzsV.reduce((a, b) => a + b.nota, 0) / qzsV.length) : 0;
-
-    // Médias por critério
-    const mediaCriterios = {};
-    Object.keys(criteriosNomes).forEach(k => {
-      const vals = simsV.filter(s => s.avaliacao?.criterios?.[k]).map(s => s.avaliacao.criterios[k]);
-      mediaCriterios[k] = vals.length > 0 ? parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)) : null;
-    });
-
-    // Todas as recomendações do gestor
-    const recomendacoes = simsV.filter(s => s.avaliacao?.recomendacao_gestor).map(s => s.avaliacao.recomendacao_gestor);
-
-    const dataHoje = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
-
-    const printStyles = `
-      @media print {
-        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .no-print { display: none !important; }
-        .print-break { page-break-before: always; }
-      }
-    `;
-
-    return (
-      <div style={{ ...s.page, background: C.fundo }}>
-        <style>{FONTS + printStyles}</style>
-        <ModalSenha />
-        <div className="no-print">
-          <Topbar usuario={usuario} onHome={() => setTela("home")} onHistorico={() => {}} onGestor={() => setTela("gestor")} onTrocarSenha={() => { setModalSenha(true); setErroSenha(""); setOkSenha(""); }} onSair={sair} />
-        </div>
-        <div style={{ maxWidth: 820, margin: "0 auto", padding: "36px 24px" }}>
-
-          {/* Ações */}
-          <div className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-            <button style={s.btnGhost} onClick={() => setTela("gestor")}>← Voltar ao Painel</button>
-            <button style={s.btnAmarelo} onClick={() => window.print()}>🖨️ Exportar PDF</button>
-          </div>
-
-          {/* Cabeçalho do relatório */}
-          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "28px 32px", marginBottom: 20 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div>
-                <div style={{ fontSize: 11, color: C.claro, letterSpacing: 2, fontFamily: MONT, fontWeight: 700, marginBottom: 6 }}>RELATÓRIO SEMANAL DE DESEMPENHO</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: C.texto, fontFamily: MONT }}>{nomeV}</div>
-                <div style={{ fontSize: 13, color: C.suave, marginTop: 4 }}>Gerado em {dataHoje} · {simsV.length} simulados · {qzsV.length} treinos técnicos</div>
-              </div>
-              <img src={LOGO_URL} alt="VB" style={{ height: 48, objectFit: "contain" }} onError={e => { e.target.style.display = "none"; }} />
-            </div>
-          </div>
-
-          {/* Cards de resumo */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "18px 20px", textAlign: "center" }}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: corNota(mediaSim), fontFamily: MONT }}>{mediaSim > 0 ? mediaSim.toFixed(1) : "—"}</div>
-              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 4, fontFamily: MONT, fontWeight: 700 }}>MÉDIA SIMULADOS IA</div>
-              <div style={{ fontSize: 11, color: C.suave, marginTop: 4 }}>{emojiNota(mediaSim)} {mediaSim >= 8 ? "Excelente" : mediaSim >= 6 ? "Bom" : mediaSim > 0 ? "Precisa evoluir" : "Sem dados"}</div>
-            </div>
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "18px 20px", textAlign: "center" }}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: corNota(mediaQz), fontFamily: MONT }}>{mediaQz > 0 ? mediaQz.toFixed(1) : "—"}</div>
-              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 4, fontFamily: MONT, fontWeight: 700 }}>MÉDIA TREINO TÉCNICO</div>
-              <div style={{ fontSize: 11, color: C.suave, marginTop: 4 }}>{qzsV.length} quiz{qzsV.length !== 1 ? "zes" : ""} realizados</div>
-            </div>
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 12, padding: "18px 20px", textAlign: "center" }}>
-              <div style={{ fontSize: 36, fontWeight: 900, color: C.azul, fontFamily: MONT }}>{simsV.length + qzsV.length}</div>
-              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 1, marginTop: 4, fontFamily: MONT, fontWeight: 700 }}>TOTAL DE ATIVIDADES</div>
-              <div style={{ fontSize: 11, color: C.suave, marginTop: 4 }}>{simsV.length} simulados + {qzsV.length} treinos</div>
-            </div>
-          </div>
-
-          {/* Avaliação por critério */}
-          {Object.keys(mediaCriterios).some(k => mediaCriterios[k] !== null) && (
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, overflow: "hidden", marginBottom: 20 }}>
-              <div style={{ padding: "14px 20px", borderBottom: `1px solid ${C.borda}`, fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT }}>AVALIAÇÃO POR CRITÉRIO — MÉDIA DO PERÍODO</div>
-              {Object.entries(criteriosNomes).map(([k, label]) => {
-                const val = mediaCriterios[k];
-                if (!val) return null;
-                return (
-                  <div key={k} style={{ padding: "14px 20px", borderBottom: `1px solid ${C.borda}`, display: "flex", alignItems: "center", gap: 16 }}>
-                    <div style={{ flex: 1, fontSize: 13, color: C.texto }}>{label}</div>
-                    <div style={{ width: 200, height: 8, background: C.fundo, borderRadius: 4, overflow: "hidden" }}>
-                      <div style={{ height: "100%", width: `${val * 10}%`, background: corNota(val), borderRadius: 4 }} />
-                    </div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: corNota(val), fontFamily: MONT, width: 32, textAlign: "right" }}>{val}</div>
-                    <div style={{ fontSize: 11, color: C.suave, width: 80 }}>{val >= 8 ? "✅ Forte" : val >= 6 ? "⚠️ Regular" : "🔴 Fraco"}</div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Evolução de notas */}
-          {simsV.length > 1 && (
-            <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "18px 20px", marginBottom: 20 }}>
-              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 14 }}>EVOLUÇÃO — SIMULADOS IA (DO MAIS ANTIGO AO MAIS RECENTE)</div>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 80 }}>
-                {[...simsV].reverse().map((sim, i) => {
-                  const altura = Math.max(12, (sim.nota / 10) * 80);
-                  return (
-                    <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: corNota(sim.nota), fontFamily: MONT }}>{sim.nota.toFixed(1)}</div>
-                      <div style={{ width: "100%", height: altura, background: corNota(sim.nota), borderRadius: "4px 4px 0 0", opacity: 0.85 }} />
-                      <div style={{ fontSize: 9, color: C.claro, textAlign: "center" }}>{sim.data}</div>
-                    </div>
-                  );
-                })}
-              </div>
-              {(() => {
-                const primeiro = simsV[simsV.length - 1]?.nota || 0;
-                const ultimo = simsV[0]?.nota || 0;
-                const delta = ultimo - primeiro;
-                return (
-                  <div style={{ marginTop: 10, fontSize: 12, color: delta >= 0 ? C.verde : C.vermelho, fontWeight: 700 }}>
-                    {delta >= 0 ? `↑ Evolução de +${delta.toFixed(1)} pontos no período` : `↓ Queda de ${Math.abs(delta).toFixed(1)} pontos no período`}
-                  </div>
-                );
-              })()}
-            </div>
-          )}
-
-          {/* Análise detalhada de cada simulado */}
-          {simsV.length > 0 && (
-            <>
-              <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 12 }}>ANÁLISE DETALHADA DAS CONVERSAS</div>
-              {simsV.map((sim, i) => (
-                <div key={i} style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 14, padding: "20px 22px", marginBottom: 14 }}>
-                  {/* Header do simulado */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: C.texto, fontFamily: MONT }}>{sim.cenario?.empresa?.nome} · {sim.cenario?.cliente?.nome}</div>
-                      <div style={{ fontSize: 12, color: C.suave, marginTop: 2 }}>{sim.cenario?.cliente?.cargo} · {sim.cenario?.empresa?.cidade} · {sim.data}</div>
-                      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                        <span style={{ ...s.tag(C.suave), fontSize: 10 }}>{sim.dificuldade?.toUpperCase()}</span>
-                        {sim.avaliacao?.encerramento && (
-                          <span style={{ ...s.tag(sim.avaliacao.encerramento === "venda_fechada" ? C.verde : sim.avaliacao.encerramento === "recusa" ? C.vermelho : C.azul), fontSize: 10 }}>
-                            {sim.avaliacao.encerramento.replace("_", " ").toUpperCase()}
-                          </span>
-                        )}
-                        <span style={{ ...s.tag(C.suave), fontSize: 10 }}>{sim.mensagens?.filter(m => m.role === "vendedor").length || 0} MSG</span>
-                      </div>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 32, fontWeight: 900, color: corNota(sim.nota), fontFamily: MONT }}>{sim.nota.toFixed(1)}</div>
-                      <div style={{ fontSize: 10, color: C.claro }}>nota final</div>
-                    </div>
-                  </div>
-
-                  {/* Critérios deste simulado */}
-                  {sim.avaliacao?.criterios && (
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
-                      {Object.entries(sim.avaliacao.criterios).map(([k, val]) => (
-                        <div key={k} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 20, background: corNota(val) + "18", color: corNota(val), fontFamily: MONT, fontWeight: 700 }}>
-                          {criteriosNomes[k]?.split(" ")[0]} {val}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Penalizações e bônus */}
-                  {sim.avaliacao?.penalizacoes?.length > 0 && (
-                    <div style={{ background: "#FEECEC", borderRadius: 8, padding: "8px 12px", marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, color: C.vermelho, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>⚠️ PENALIZAÇÕES APLICADAS</div>
-                      {sim.avaliacao.penalizacoes.map((p, j) => <div key={j} style={{ fontSize: 12, color: C.vermelho }}>· {p}</div>)}
-                    </div>
-                  )}
-                  {sim.avaliacao?.bonus?.length > 0 && (
-                    <div style={{ background: "#EAFAF1", borderRadius: 8, padding: "8px 12px", marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, color: C.verde, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>✅ BÔNUS APLICADOS</div>
-                      {sim.avaliacao.bonus.map((b, j) => <div key={j} style={{ fontSize: 12, color: C.verde }}>· {b}</div>)}
-                    </div>
-                  )}
-
-                  {/* Fortes e melhorias */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
-                    <div>
-                      <div style={{ fontSize: 10, color: C.verde, fontWeight: 700, fontFamily: MONT, marginBottom: 6 }}>PONTOS FORTES</div>
-                      {(sim.avaliacao?.fortes || []).map((f, j) => <div key={j} style={{ fontSize: 12, color: C.texto, marginBottom: 4, lineHeight: 1.5 }}>· {f}</div>)}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: C.vermelho, fontWeight: 700, fontFamily: MONT, marginBottom: 6 }}>PONTOS A MELHORAR</div>
-                      {(sim.avaliacao?.melhorias || []).map((m, j) => <div key={j} style={{ fontSize: 12, color: C.texto, marginBottom: 4, lineHeight: 1.5 }}>· {m}</div>)}
-                    </div>
-                  </div>
-
-                  {/* Feedback */}
-                  {sim.avaliacao?.feedback && (
-                    <div style={{ borderLeft: `3px solid ${C.amarelo}`, paddingLeft: 12, marginBottom: 12 }}>
-                      <div style={{ fontSize: 12, color: C.texto, lineHeight: 1.7 }}>{sim.avaliacao.feedback}</div>
-                    </div>
-                  )}
-
-                  {/* Recomendação ao gestor */}
-                  {sim.avaliacao?.recomendacao_gestor && (
-                    <div style={{ background: "#FFF8E1", border: `1px solid ${C.amarelo}44`, borderRadius: 8, padding: "10px 14px" }}>
-                      <div style={{ fontSize: 10, color: C.amareloEscuro, fontWeight: 700, fontFamily: MONT, marginBottom: 4 }}>💡 AÇÃO RECOMENDADA PARA O GESTOR</div>
-                      <div style={{ fontSize: 12, color: C.texto, lineHeight: 1.6 }}>{sim.avaliacao.recomendacao_gestor}</div>
-                    </div>
-                  )}
-
-                  {/* Transcrição da conversa */}
-                  {sim.mensagens && sim.mensagens.length > 0 && (
-                    <details style={{ marginTop: 14 }}>
-                      <summary style={{ fontSize: 12, color: C.azul, cursor: "pointer", fontWeight: 700, fontFamily: MONT }}>Ver transcrição completa ({sim.mensagens.length} mensagens)</summary>
-                      <div style={{ marginTop: 10, maxHeight: 300, overflowY: "auto", border: `1px solid ${C.borda}`, borderRadius: 8, padding: 12, background: C.fundo }}>
-                        {sim.mensagens.map((m, j) => (
-                          <div key={j} style={{ marginBottom: 8, display: "flex", gap: 8, alignItems: "flex-start" }}>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: m.role === "vendedor" ? C.azul : C.suave, fontFamily: MONT, flexShrink: 0, width: 64, paddingTop: 2 }}>
-                              {m.role === "vendedor" ? nomeV.split(" ")[0] : sim.cenario?.cliente?.nome?.split(" ")[0]}
-                            </div>
-                            <div style={{ fontSize: 12, color: C.texto, lineHeight: 1.5 }}>{m.content}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
-
-          {/* Plano de ação consolidado */}
-          {recomendacoes.length > 0 && (
-            <div style={{ background: C.branco, border: `2px solid ${C.amarelo}`, borderRadius: 14, padding: "22px 24px", marginBottom: 24 }}>
-              <div style={{ fontSize: 11, color: C.amareloEscuro, letterSpacing: 2, fontWeight: 700, fontFamily: MONT, marginBottom: 14 }}>📋 PLANO DE AÇÃO — REUNIÃO SEMANAL</div>
-              {recomendacoes.map((r, i) => (
-                <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10, alignItems: "flex-start" }}>
-                  <div style={{ width: 22, height: 22, borderRadius: "50%", background: C.amarelo, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: C.preto, flexShrink: 0, fontFamily: MONT }}>{i + 1}</div>
-                  <div style={{ fontSize: 13, color: C.texto, lineHeight: 1.6 }}>{r}</div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Rodapé impressão */}
-          <div style={{ textAlign: "center", fontSize: 11, color: C.claro, paddingTop: 16, borderTop: `1px solid ${C.borda}` }}>
-            VoIP do Brasil · Plataforma de Treinamento Comercial · {dataHoje}
-          </div>
-
-          <div className="no-print" style={{ display: "flex", gap: 10, marginTop: 24 }}>
-            <button style={s.btnGhost} onClick={() => setTela("gestor")}>← Voltar ao Painel</button>
-            <button style={s.btnAmarelo} onClick={() => window.print()}>🖨️ Exportar PDF</button>
-          </div>
+          <button style={s.btnAmarelo} onClick={() => setTela("home")}>🎯 Ir para Treinamento</button>
+          <button style={{ ...s.btnGhost, marginLeft: 10 }} onClick={sair}>← Sair do painel</button>
         </div>
       </div>
     );
