@@ -869,6 +869,7 @@ export default function App() {
     setUsuario(u);
     setTela("home");
     if (u.role === "admin") carregarTodos();
+    else { buscarSimulacoes(u.nome).then(dados => setHistorico(dados)); }
   };
 
   const sair = () => { localStorage.removeItem("vb_sessao"); setUsuario(null); setNomeInput(""); setSenhaInput(""); setTela("login"); };
@@ -894,6 +895,7 @@ export default function App() {
   useEffect(() => {
     if (usuarioSalvo) {
       if (usuarioSalvo.role === "admin") { carregarTodos(); }
+      else { buscarSimulacoes(usuarioSalvo.nome).then(dados => setHistorico(dados)); }
     }
   }, []);
 
