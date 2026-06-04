@@ -486,7 +486,6 @@ const Topbar = ({ usuario, onHome, onHistorico, onRanking, onGestor, onTrocarSen
     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
       {usuario && <span style={{ fontSize: 12, color: C.claro }}>Olá, <span style={{ color: C.amareloEscuro, fontWeight: 700 }}>{usuario.nome}</span></span>}
       {usuario && <button style={s.btnGhost} onClick={onHistorico}>Meus resultados</button>}
-      {usuario?.role === "admin" && <button style={s.btnGhost} onClick={onRanking}>🏆 Ranking</button>}
       {usuario && <button style={s.btnGhost} onClick={onTrocarSenha}>🔑 Senha</button>}
       {usuario?.role === "admin" && <button style={s.btnGestor} onClick={onGestor}>Painel Gestor</button>}
       {usuario && <button style={{ ...s.btnGhost, color: C.vermelho, borderColor: C.vermelho + "44" }} onClick={onSair}>Sair</button>}
@@ -1541,40 +1540,74 @@ export default function App() {
             ))}
           </div>
 
-          {/* Ranking compacto */}
-          <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>RANKING DA EQUIPE</div>
-          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, borderRadius: 0, overflow: "hidden", marginBottom: 28 }}>
-            {/* Cabeçalho */}
-            <div style={{ display: "grid", gridTemplateColumns: "28px 130px 1fr repeat(6,48px) 60px 110px", gap: 6, padding: "10px 16px", borderBottom: `1.5px solid ${C.borda}`, background: C.fundo, alignItems: "center" }}>
-              <div /><div style={{ fontSize: 10, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>VENDEDOR</div>
+          {/* Ranking completo da equipe */}
+          <div style={{ fontSize: 10, color: C.claro, letterSpacing: 2, marginBottom: 12, fontWeight: 700, fontFamily: MONT }}>🏆 RANKING DA EQUIPE</div>
+
+          {/* Pódio top 3 */}
+          {stats.length >= 3 && (() => {
+            const medalhas = ["🥇", "🥈", "🥉"];
+            const ordem = [stats[1], stats[0], stats[2]];
+            const alturas = [110, 140, 100];
+            return (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1.15fr 1fr", gap: 10, marginBottom: 16, alignItems: "flex-end" }}>
+                {ordem.map((v, i) => {
+                  const posReal = i === 0 ? 2 : i === 1 ? 1 : 3;
+                  const sims = simulados.filter(r => r.vendedor === v.vendedor);
+                  const tendencia = sims.length >= 2 ? (sims[0].nota - sims[1].nota) : null;
+                  return (
+                    <div key={v.vendedor} style={{ background: posReal === 1 ? C.amarelo : C.branco, border: `1.5px solid ${posReal === 1 ? C.amareloEscuro : C.borda}`, padding: "16px 12px", textAlign: "center", height: alturas[i], display: "flex", flexDirection: "column", justifyContent: "center", gap: 3 }}>
+                      <div style={{ fontSize: 22 }}>{medalhas[posReal - 1]}</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: posReal === 1 ? C.preto : C.texto, fontFamily: MONT }}>{v.vendedor}</div>
+                      <div style={{ fontSize: 20, fontWeight: 900, color: posReal === 1 ? C.preto : corNota(v.media), fontFamily: MONT }}>{v.media.toFixed(1)}</div>
+                      <div style={{ fontSize: 10, color: posReal === 1 ? "#0006" : C.claro }}>{v.totalSim}s · {v.totalQz}q</div>
+                      {tendencia !== null && <div style={{ fontSize: 10, fontWeight: 700, color: tendencia > 0 ? C.verde : tendencia < 0 ? C.vermelho : C.claro }}>{tendencia > 0 ? `↑ +${tendencia.toFixed(1)}` : tendencia < 0 ? `↓ ${tendencia.toFixed(1)}` : "→ estável"}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
+
+          {/* Lista completa */}
+          <div style={{ background: C.branco, border: `1.5px solid ${C.borda}`, overflow: "hidden", marginBottom: 28 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "36px 140px 1fr repeat(6,44px) 60px 70px 110px", gap: 6, padding: "10px 16px", borderBottom: `1.5px solid ${C.borda}`, background: C.fundo, alignItems: "center" }}>
+              <div /><div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700 }}>VENDEDOR</div>
               <div />
               {Object.values(criteriosNomes).map(n => <div key={n} style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>{n.toUpperCase()}</div>)}
-              <div style={{ fontSize: 10, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>MÉDIA</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>MÉDIA</div>
+              <div style={{ fontSize: 9, color: C.claro, fontFamily: MONT, fontWeight: 700, textAlign: "center" }}>TEND.</div>
               <div />
             </div>
-            {loading && <div style={{ padding: 24, color: C.suave, textAlign: "center" }}>Carregando...</div>}
             {!loading && stats.length === 0 && <div style={{ padding: 24, color: C.suave, textAlign: "center" }}>Nenhum resultado ainda.</div>}
-            {stats.map((v, i) => (
-              <div key={v.vendedor} style={{ display: "grid", gridTemplateColumns: "28px 130px 1fr repeat(6,48px) 60px 110px", gap: 6, padding: "12px 16px", borderBottom: i < stats.length - 1 ? `1px solid ${C.borda}` : "none", alignItems: "center" }}>
-                <div style={{ width: 22, height: 22, borderRadius: "50%", background: i === 0 ? C.amarelo : C.fundo, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: i === 0 ? C.preto : C.suave, fontFamily: MONT }}>{i + 1}</div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: C.texto, fontFamily: MONT }}>{v.vendedor}</div>
-                  <div style={{ fontSize: 10, color: C.claro }}>{v.totalSim}s · {v.totalQz}q</div>
-                </div>
-                <div style={{ height: 5, background: C.fundo, borderRadius: 0, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${(v.media / 10) * 100}%`, background: corNota(v.media), borderRadius: 0 }} />
-                </div>
-                {Object.keys(criteriosNomes).map(k => (
-                  <div key={k} style={{ textAlign: "center", fontSize: 13, fontWeight: 700, color: v.criterios[k] ? corNota(v.criterios[k]) : C.claro, fontFamily: MONT }}>
-                    {v.criterios[k] ?? "—"}
+            {stats.map((v, i) => {
+              const sims = simulados.filter(r => r.vendedor === v.vendedor);
+              const tendencia = sims.length >= 2 ? (sims[0].nota - sims[1].nota) : null;
+              const medalhas = ["🥇", "🥈", "🥉"];
+              return (
+                <div key={v.vendedor} style={{ display: "grid", gridTemplateColumns: "36px 140px 1fr repeat(6,44px) 60px 70px 110px", gap: 6, padding: "12px 16px", borderBottom: i < stats.length - 1 ? `1px solid ${C.borda}` : "none", alignItems: "center", background: i === 0 ? "#FFF8E1" : "transparent" }}>
+                  <div style={{ fontSize: i < 3 ? 16 : 11, fontWeight: 800, color: i < 3 ? C.amareloEscuro : C.claro, fontFamily: MONT, textAlign: "center" }}>{i < 3 ? medalhas[i] : i + 1}</div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: C.texto, fontFamily: MONT }}>{v.vendedor}</div>
+                    <div style={{ fontSize: 10, color: C.claro }}>{v.totalSim}s · {v.totalQz}q</div>
                   </div>
-                ))}
-                <div style={{ textAlign: "center", fontSize: 20, fontWeight: 900, color: corNota(v.media), fontFamily: MONT }}>{v.media || "—"}</div>
-                <button onClick={() => { setRelatorioVendedor(v.vendedor); setTela("relatorio"); }} style={{ ...s.btnGhost, fontSize: 11, padding: "5px 10px", color: C.amareloEscuro, borderColor: C.amarelo + "88" }}>
-                  Relatório →
-                </button>
-              </div>
-            ))}
+                  <div style={{ height: 5, background: C.fundo, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${(v.media / 10) * 100}%`, background: corNota(v.media) }} />
+                  </div>
+                  {Object.keys(criteriosNomes).map(k => (
+                    <div key={k} style={{ textAlign: "center", fontSize: 12, fontWeight: 700, color: v.criterios[k] ? corNota(v.criterios[k]) : C.claro, fontFamily: MONT }}>
+                      {v.criterios[k] ?? "—"}
+                    </div>
+                  ))}
+                  <div style={{ textAlign: "center", fontSize: 18, fontWeight: 900, color: corNota(v.media), fontFamily: MONT }}>{v.media.toFixed(1)}</div>
+                  <div style={{ textAlign: "center", fontSize: 11, fontWeight: 700, color: tendencia !== null ? (tendencia > 0 ? C.verde : tendencia < 0 ? C.vermelho : C.claro) : C.claro, fontFamily: MONT }}>
+                    {tendencia !== null ? (tendencia > 0 ? `↑+${tendencia.toFixed(1)}` : tendencia < 0 ? `↓${tendencia.toFixed(1)}` : "→") : "—"}
+                  </div>
+                  <button onClick={() => { setRelatorioVendedor(v.vendedor); setTela("relatorio"); }} style={{ ...s.btnGhost, fontSize: 11, padding: "5px 10px", color: C.amareloEscuro, borderColor: C.amarelo + "88" }}>
+                    Relatório →
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Gráfico de Evolução por Vendedor */}
