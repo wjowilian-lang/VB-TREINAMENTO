@@ -435,16 +435,24 @@ BONUS (some na nota final, máx +1.0):
 - Usou o argumento de suporte 24h + ISO 9001 corretamente: +0.3
 - Descobriu o contexto secreto do cenário: +0.5
 
-Calcule a nota final como média dos 6 critérios + bônus - penalizações, limitada entre 1.0 e 10.0.
-Notas próximas de 7.5 para todos são PROIBIDAS — diferencie com base no que realmente aconteceu.
+CÁLCULO OBRIGATÓRIO — siga esse passo a passo antes de montar o JSON:
+1. Atribua uma nota de 0 a 10 para cada critério com base na rubrica acima e no que REALMENTE aconteceu na conversa.
+2. Some os 6 critérios e divida por 6 para obter a média.
+3. Aplique penalizações (subtraia) e bônus (some), mantendo o resultado entre 1.0 e 10.0.
+4. Esse valor calculado é a "nota" final — NÃO use nenhum valor fixo ou de exemplo.
 
-Retorne APENAS um JSON válido:
+REGRAS ANTI-ÂNCORA:
+- PROIBIDO retornar nota 6.2 por padrão — essa é uma nota de exemplo que NÃO deve ser usada.
+- PROIBIDO dar notas iguais para critérios diferentes se o desempenho foi diferente.
+- Notas entre 6.0 e 6.5 para todos os vendedores indica erro de avaliação — diferencie com base nos fatos.
+
+Retorne APENAS um JSON válido com os valores que VOCÊ calculou (sem exemplo, sem placeholder):
 {
-  "nota": 6.2,
-  "criterios": { "qualificacao": 7, "necessidades": 5, "tecnica": 8, "objecoes": 4, "fechamento": 6, "comunicacao": 7 },
+  "nota": CALCULE_AQUI,
+  "criterios": { "qualificacao": CALCULE, "necessidades": CALCULE, "tecnica": CALCULE, "objecoes": CALCULE, "fechamento": CALCULE, "comunicacao": CALCULE },
   "penalizacoes": ["descrição se houver, senão array vazio"],
   "bonus": ["descrição se houver, senão array vazio"],
-  "fortes": ["ponto forte específico 1", "ponto forte específico 2"],
+  "fortes": ["ponto forte específico 1 baseado na conversa real", "ponto forte específico 2"],
   "melhorias": ["melhoria acionável 1", "melhoria acionável 2", "melhoria 3"],
   "feedback": "Parágrafo único, direto e construtivo. Citar momentos específicos da conversa.",
   "encerramento": "venda_fechada | proposta_enviada | agendamento | recusa | inconcluso",
