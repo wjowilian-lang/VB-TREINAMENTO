@@ -371,11 +371,11 @@ const avaliarConversa = async (cenario, mensagens) => {
   const totalMsgsVendedor = mensagens.filter(m => m.role === "vendedor").length;
   const prompt = `${VB_KNOWLEDGE}
 
-Você é um avaliador RIGOROSO e DIFERENCIADO de vendas consultivas B2B de telefonia VoIP.
-Sua missão é dar notas REAIS que reflitam diferenças genuínas entre vendedores.
-JAMAIS dê notas iguais ou próximas para critérios diferentes — isso não ajuda o gestor.
+Você é um avaliador RIGOROSO de vendas consultivas B2B de telefonia VoIP.
+A meta de desempenho da equipe é 8.0. Nota 8 representa um vendedor preparado — não é presente, é conquista.
+Sua missão é avaliar com precisão cirúrgica o que REALMENTE aconteceu na conversa, sem suavizar e sem inflar.
 
-CENÁRIO:
+CONTEXTO DO CENÁRIO:
 - Empresa: ${cenario.empresa.nome} (${cenario.empresa.porte}, ${cenario.empresa.situacao_atual})
 - Cliente: ${cenario.cliente.nome}, ${cenario.cliente.cargo}
 - Dores reais do cliente: ${cenario.dores.join(", ")}
@@ -385,78 +385,92 @@ CENÁRIO:
 CONVERSA COMPLETA (${totalMsgsVendedor} mensagens do vendedor):
 ${conversa}
 
-RUBRICA DE AVALIAÇÃO — aplique com rigor:
+━━━ RUBRICA DE AVALIAÇÃO — leia cada faixa com atenção ━━━
 
 QUALIFICACAO (0-10):
-- 9-10: Perguntou situação atual, ramais, dores, orçamento e prazo ANTES de apresentar produto
-- 7-8: Qualificou parcialmente, deixou lacunas importantes
-- 5-6: Apresentou produto antes de qualificar ou qualificou superficialmente
-- 0-4: Não qualificou nada, foi direto para pitch ou preço
+- 9-10: Perguntou situação atual, número de ramais, dores, orçamento E prazo — tudo isso ANTES de apresentar qualquer produto. Qualificação completa e natural.
+- 7-8: Qualificou a maioria dos pontos mas deixou 1 ou 2 lacunas relevantes (ex: não perguntou orçamento ou não perguntou prazo).
+- 5-6: Qualificou superficialmente (1-2 perguntas genéricas) ou apresentou produto antes de entender o cenário.
+- 3-4: Tentou qualificar mas foi desorganizado ou fez perguntas fora de contexto.
+- 0-2: Não qualificou nada — foi direto para pitch, preço ou features sem entender o cliente.
 
 NECESSIDADES (0-10):
-- 9-10: Usou SPIN ou equivalente, descobriu dores profundas, fez o cliente sentir o problema
-- 7-8: Fez perguntas mas não aprofundou nas implicações
-- 5-6: Perguntou o básico mas não explorou
-- 0-4: Não investigou necessidades, assumiu o que o cliente precisava
+- 9-10: Usou técnica SPIN ou equivalente. Fez perguntas de Implicação que fizeram o cliente sentir o peso do problema. Descobriu a dor real por trás da dor declarada.
+- 7-8: Fez boas perguntas de situação e problema, mas não aprofundou nas implicações nem na necessidade de solução.
+- 5-6: Perguntou o básico ("quantos ramais?", "qual o problema?") mas não explorou o impacto das dores.
+- 3-4: Pouca investigação, assumiu necessidades sem perguntar.
+- 0-2: Não investigou — partiu de premissas próprias ou foi 100% pitch sem ouvir o cliente.
 
 TECNICA (0-10):
-- 9-10: Demonstrou domínio de SIP, PABX, portabilidade, diferenciais VB com precisão
-- 7-8: Explicou bem os produtos mas com lacunas técnicas menores
-- 5-6: Conhecimento superficial, evitou perguntas técnicas ou deu respostas vagas
-- 0-4: Errou informações técnicas, inventou dados, não soube responder
+- 9-10: Demonstrou domínio real de SIP, PABX Virtual, Tronco SIP, portabilidade, DDR, URA — com dados corretos e contextualizados para o perfil do cliente.
+- 7-8: Explicou os produtos relevantes com clareza, mas com 1-2 lacunas técnicas ou generalizações.
+- 5-6: Conhecimento superficial — usou termos corretos mas sem profundidade ou sem adaptar ao perfil do cliente.
+- 3-4: Evitou perguntas técnicas, deu respostas vagas ou incompletas.
+- 0-2: Errou informações técnicas, inventou dados, confundiu produtos ou demonstrou despreparo técnico evidente.
 
 OBJECOES (0-10):
-- 9-10: Antecipou objeções, usou suporte 24h/ISO/teste grátis, reconverteu resistência
-- 7-8: Tratou objeções mas sem profundidade ou deixou alguma sem resposta
-- 5-6: Cedeu rápido (ex: deu desconto sem explorar valor) ou ignorou objeções
-- 0-4: Não soube tratar objeções, ficou na defensiva ou concordou sem argumentar
+- 9-10: Tratou TODAS as objeções que surgiram. Usou argumentos concretos da VB (suporte 24h, ISO 9001, teste grátis, uptime 99,99%). Reconverteu resistência em interesse. Antecipou objeções antes delas aparecerem.
+- 7-8: Tratou a maioria das objeções bem, mas deixou 1 sem resposta adequada ou cedeu rápido em alguma.
+- 5-6: Tratou objeções de forma genérica, sem usar os diferenciais da VB como argumento.
+- 3-4: Ficou na defensiva ou ignorou objeções.
+- 0-2: Não soube tratar nenhuma objeção — concordou com o cliente, deu desconto imediato ou não respondeu.
 
 FECHAMENTO (0-10):
-- 9-10: Tentou fechar ativamente, usou o teste grátis de 14 dias, criou urgência real
-- 7-8: Sinalizou próximos passos mas não fechou com clareza
-- 5-6: Deixou a conversa sem direção clara ou próximo passo definido
-- 0-4: Não tentou fechar, perdeu oportunidade clara, encerrou sem compromisso
+- 9-10: Tentou fechar ativamente com técnica clara (ex: teste grátis de 14 dias, urgência real, proposta concreta). Definiu próximo passo com data/hora/responsável.
+- 7-8: Sinalizou fechamento mas sem técnica ou sem definir próximo passo com clareza.
+- 5-6: Deixou a conversa aberta sem direção — "vou te mandar uma proposta" sem comprometimento.
+- 3-4: Não tentou fechar mesmo tendo abertura do cliente.
+- 0-2: Perdeu oportunidade clara de fechamento ou encerrou sem nenhum compromisso.
 
 COMUNICACAO (0-10):
-- 9-10: Clara, adaptada ao perfil, linguagem correta para o nível técnico, empática
-- 7-8: Boa comunicação com alguns excessos técnicos ou formais
-- 5-6: Mecânica, muito formal ou informal para o contexto
-- 0-4: Confusa, mensagens longas sem objetivo, tom inadequado
+- 9-10: Linguagem adaptada ao perfil do interlocutor (técnico vs. gestor vs. financeiro). Empática, direta, sem jargão desnecessário. Conduziu o ritmo da conversa com naturalidade.
+- 7-8: Boa comunicação mas com momentos de excesso técnico, formalidade fora de lugar ou mensagens longas demais.
+- 5-6: Comunicação mecânica, padrão, sem adaptação ao perfil do cliente.
+- 3-4: Mensagens confusas, tom inadequado ou comunicação que gerou ruído.
+- 0-2: Comunicação que prejudicou ativamente a venda — cliente claramente não entendeu ou se sentiu mal atendido.
 
-PENALIZACOES (subtraia da nota final):
-- Inventou preços, prazos ou funcionalidades inexistentes na VB: -2.0
+━━━ PENALIZAÇÕES (subtraia da nota final) ━━━
+- Inventou preços, prazos ou funcionalidades que a VB não oferece: -2.0
 - Falou mal de concorrente diretamente: -1.0
-- Apresentou preço antes de qualificar: -1.5
+- Apresentou preço antes de qualificar minimamente: -1.5
 - Prometeu coisas fora do escopo da VB: -1.5
-- Conversa muito curta (menos de 4 msgs do vendedor) sem motivo: -2.0
+- Conversa muito curta (menos de 4 mensagens do vendedor) sem justificativa: -2.0
 
-BONUS (some na nota final, máx +1.0):
-- Mencionou o teste grátis de 14 dias como gatilho de fechamento: +0.5
-- Usou o argumento de suporte 24h + ISO 9001 corretamente: +0.3
+━━━ BÔNUS (some na nota final, máximo +1.0) ━━━
+- Usou o teste grátis de 14 dias como gatilho de fechamento: +0.5
+- Usou suporte 24h + ISO 9001 como argumento concreto de valor: +0.3
 - Descobriu o contexto secreto do cenário: +0.5
 
-CÁLCULO OBRIGATÓRIO — siga esse passo a passo antes de montar o JSON:
-1. Atribua uma nota de 0 a 10 para cada critério com base na rubrica acima e no que REALMENTE aconteceu na conversa.
-2. Some os 6 critérios e divida por 6 para obter a média.
-3. Aplique penalizações (subtraia) e bônus (some), mantendo o resultado entre 1.0 e 10.0.
-4. Esse valor calculado é a "nota" final — NÃO use nenhum valor fixo ou de exemplo.
+━━━ ESCALA DE REFERÊNCIA — use isso para calibrar ━━━
+- 9-10: Vendedor excepcional. Raro. Pronto para fechar qualquer conta.
+- 8-8.9: Bom vendedor. Atingiu a meta. Pequenos ajustes para excelência.
+- 6-7.9: Abaixo da meta. Tem base mas precisa evoluir em pontos específicos.
+- 4-5.9: Fraco. Lacunas sérias que comprometem resultados reais.
+- 0-3.9: Muito fraco. Requer treinamento intensivo antes de atender clientes.
 
-REGRAS ANTI-ÂNCORA:
-- PROIBIDO retornar nota 6.2 por padrão — essa é uma nota de exemplo que NÃO deve ser usada.
-- PROIBIDO dar notas iguais para critérios diferentes se o desempenho foi diferente.
-- Notas entre 6.0 e 6.5 para todos os vendedores indica erro de avaliação — diferencie com base nos fatos.
+━━━ CÁLCULO OBRIGATÓRIO ━━━
+1. Avalie cada critério individualmente com base APENAS no que aconteceu na conversa.
+2. Média = soma dos 6 critérios ÷ 6.
+3. Aplique penalizações e bônus. Limite entre 1.0 e 10.0.
+4. Esse valor calculado é a "nota" — nunca use um valor fixo ou padrão.
 
-Retorne APENAS um JSON válido com os valores que VOCÊ calculou (sem exemplo, sem placeholder):
+REGRAS INVIOLÁVEIS:
+- Nota 8+ exige desempenho claramente acima da média em pelo menos 4 critérios.
+- Notas iguais para todos os vendedores = erro de avaliação — diferencie com base nos fatos.
+- Seja honesto: um vendedor mediano não merece 8. Um vendedor ruim não merece 6. Avalie o que aconteceu.
+- O feedback deve citar momentos reais da conversa — não invente situações que não aconteceram.
+
+Retorne APENAS JSON válido, sem texto antes ou depois, sem markdown:
 {
-  "nota": CALCULE_AQUI,
-  "criterios": { "qualificacao": CALCULE, "necessidades": CALCULE, "tecnica": CALCULE, "objecoes": CALCULE, "fechamento": CALCULE, "comunicacao": CALCULE },
-  "penalizacoes": ["descrição se houver, senão array vazio"],
-  "bonus": ["descrição se houver, senão array vazio"],
-  "fortes": ["ponto forte específico 1 baseado na conversa real", "ponto forte específico 2"],
-  "melhorias": ["melhoria acionável 1", "melhoria acionável 2", "melhoria 3"],
-  "feedback": "Parágrafo único, direto e construtivo. Citar momentos específicos da conversa.",
+  "nota": <número calculado entre 1.0 e 10.0>,
+  "criterios": { "qualificacao": <0-10>, "necessidades": <0-10>, "tecnica": <0-10>, "objecoes": <0-10>, "fechamento": <0-10>, "comunicacao": <0-10> },
+  "penalizacoes": ["descrição da penalização aplicada, ou array vazio se nenhuma"],
+  "bonus": ["descrição do bônus aplicado, ou array vazio se nenhum"],
+  "fortes": ["ponto forte específico citando momento real da conversa", "segundo ponto forte"],
+  "melhorias": ["melhoria acionável e específica 1", "melhoria acionável 2", "melhoria 3"],
+  "feedback": "Parágrafo direto e construtivo. Citar momentos específicos. Dizer claramente se atingiu ou não a meta de 8.0 e por quê.",
   "encerramento": "venda_fechada | proposta_enviada | agendamento | recusa | inconcluso",
-  "recomendacao_gestor": "Ação concreta que o gestor deve fazer com esse vendedor na próxima semana."
+  "recomendacao_gestor": "Ação concreta que o gestor deve tomar com esse vendedor na próxima semana para atingir a meta 8.0."
 }`;
 
   const raw = await callGPT([], prompt, true);
